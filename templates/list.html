@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+      {% for tribe in tribes %}
+        <div class="row bg-light m-3 p-3" >
+          <div class="col-lg-12">
+          <h3>{{tribe.name}}</h3>
+            <div class="card-deck">
+              {% for player in tribe.players %}
+                <div class="card p-2 m-1">
+                  <h6 class="card-title">{{player.first}}</h6>
+                    <p class="card-text small">
+                      ID: {{player.id}}<br>
+                      Age: {{player.age}}<br>
+                      Strategy: {{player.strategy}}<br>
+                      Social: {{player.social}}<br>
+                      Physical: {{player.physical}}<br>
+                      Overall: {{player.strength()}}<br>
+                    </p>
+                </div>
+              {% endfor %}
+            </div>
+            </div>
+        </div>
+      {% endfor %}
+
+{% endblock %}

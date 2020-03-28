@@ -1,0 +1,505 @@
+Aganoa
+Agua
+Aiga
+Airai
+Airai
+Aire
+Aire
+Aitutaki
+Aitutonga
+Alinta
+Angkor
+Aopoh
+Aparri
+Apolaki
+Araguara
+Araras Vermelhas
+Araw
+Asaga
+Asatoa
+Aurora
+Aurora
+Balboa
+Balboa
+Banda
+Banda
+Barramundi
+Barramundi
+Batang
+Batang
+Bayon
+Bayon
+Bayoneta
+Bayoneta
+Bikal
+Bikal
+Bokor
+Bokor
+Boran
+Boran
+Boro
+Boro
+Bula Bula
+Bula Bula
+Bulan
+Bulan
+C
+Caracol
+Caracol
+Casar
+Casar
+Casaya
+Casaya
+Chaboga Mogo
+Chaboga Mogo
+Chalam
+Chalam
+Chan Loh
+Chan Loh
+Chani
+Chani
+Chapera
+Chuay Gahn
+Chuay Jai
+Chuay Jai
+Coravu
+Coravu
+Coyopa
+Coyopa
+D
+Dabu
+Dabu
+Dakal
+Dakal
+Dangrayne
+Dangrayne
+Dara
+Dara
+Do
+Do
+Drake
+Drake
+E
+Eku
+Eku
+Empu
+Empu
+Enil Edam
+Enil Edam
+Escameca
+Escameca
+Espada
+Espada
+Estrella
+Fang
+Fang
+Fei Long
+Fei Long
+Fia Fia
+Fia Fia
+Foa Foa
+Foa Foa
+Fogo
+Fogo
+Foguagua
+Foguagua
+Forza
+Forza
+Fuego
+Fuego
+Fusión
+Galang
+Galang
+Galone
+Galone
+Galu
+Galu
+Gitanos
+Gitanos
+Godínez
+Godínez
+Goma
+Goma
+Gondol
+Gondol
+Gota
+Gota
+Guntao
+Guntao
+Hae Da Fung
+Hae Da Fung
+Hermosa
+Hermosa
+Heroes
+Heroes
+Hierro
+Hierro
+Hunahpu
+Hunahpu
+Huyopa
+Huyopa
+I
+Ikabula
+Ikabula
+Ikalu
+Ikalu
+J
+Jabeni
+Jabeni
+Jaburu
+Jaburu
+Jacare
+Jacare
+Jacare
+Jade
+Jade
+Jaguar
+Jaguar
+Jalapao
+Jalapao
+Jarakay
+Jarakay
+K
+Kadina
+Kadina
+Kakula
+Kalabaw
+Kalabaw
+Kalo Kalo
+Kalokalo
+Kalokalo
+Kama
+Kanawa
+Kanawa
+Karwai
+Karwai
+Kasama
+Kasama
+Khangkhaw
+Khangkhaw
+Klahan
+Klahan
+Koro Savu
+Koro Savu
+Korok
+Korok
+Koror
+Koror
+Koror
+Koru
+Kota
+Kota
+Kucha
+Kucha
+Kumo
+Kumo
+L
+La Flor
+La Flor
+La Mina
+La Mina
+Lairo
+Lairo
+Lankawai
+Lankawai
+Lanta-nai
+Lanta-nai
+Laumei
+Laumei
+Lavita
+Lavita
+Lawaki
+Lawaki
+Lesu
+Lesu
+Levu
+Levu
+Libertad
+Libertad
+Lobos Guaras
+Lobos Guaras
+Lopevi
+Lopevi
+Lua
+Lua
+Lumuwaku
+Lumuwaku
+Luna
+Luzon
+Machiga
+Machiga
+Magan
+Magan
+Makawa
+Makawa
+Maku Maku
+Maku Maku
+Malabou
+Malabou
+Malakal
+Malakal
+Malolo
+Malolo
+Mambok
+Mambok
+Mana
+Mana
+Manibu
+Manibu
+Manihiki
+Manihiki
+Manono
+Manono
+Manu
+Manu
+Manumalo
+Manumalo
+Maraamu
+Maraamu
+Masaya
+Masaya
+Matsing
+Matsing
+Mawar
+Mawar
+Mawai
+Merica
+Merica
+Mindanao
+Mindanao
+Mingao
+Mingao
+Mogo
+Mogo
+Mogo Mogo
+Mogo Mogo
+Mogotón
+Mogotón
+Mokuta
+Mokuta
+Mono
+Mono
+Morgan
+Morgan
+Moso
+Moso
+Mosso
+Mosso
+Moto
+Moto
+Moto Maji
+Moto Maji
+Murlonio
+Murlonio
+N
+Naak
+Naak
+Nacomo
+Nacomo
+Naga
+Naga
+
+Nagar
+Nagar
+Nagarote
+Nagarote
+Nakúm
+Nakúm
+Naviti
+Naviti
+Nekmao
+Nekmao
+Nobag
+Nobag
+Nuku
+Nuku
+O
+Ogakor
+Ogakor
+Ometepe
+Ometepe
+Orkun
+Orkun
+Oro
+Oro
+P
+Pagong
+Pagong
+Phsan
+Phsan
+Pudientes
+Pudientes
+Puka Puka
+Puka Puka
+R
+Rarotonga
+Rarotonga
+Rattana
+Rattana
+Ravu
+Ravu
+Rotu
+Rotu
+S
+Sa'ula
+Sa'ula
+Saanapu
+Saanapu
+Saboga
+Saboga
+Salani
+Salani
+Salvation
+Salvation
+Samatau
+Samatau
+Sambor
+Sambor
+Samburu
+Samburu
+Sar Mayee
+Sar Mayee
+Savaii
+Savaii
+Sele
+Sele
+Serpiente
+Serpiente
+Simban
+Simban
+Sokka
+Sokka
+Soko
+Soko
+Sol
+Solana
+Solana
+Solarrion
+Solarrion
+Solewa
+Solewa
+Soli Bula
+Soli Bula
+Soliantu
+Soliantu
+Sonsorol
+Sonsorol
+Sook Jai
+Sook Jai
+Sungai
+Sungai
+T
+Ta Keo
+Ta Keo
+Ta'alo
+Ta'alo
+Tabuo
+Tabuo
+Tadhana
+Tadhana
+Tagi
+Tagi
+Taiba
+Taiba
+Takali
+Takali
+Takeo
+Takeo
+Tala
+Tala
+Tambaqui
+Tambaqui
+Tambor
+Tambor
+Tana
+Tana
+Tandang
+Tandang
+Tanna
+Tanna
+Tavua
+Tavua
+Tayak
+Tayak
+Te Tuna
+Te Tuna
+Tengah
+The Outcasts
+Tiac
+Tiac
+Tierra
+Tierra
+Tikiano
+Tikiano
+Timbira
+Timbira
+Tinggi
+Tinggi
+Tipara
+Tipara
+Tiva
+Tiva
+To Tang
+To Tang
+Toa
+Toa
+Tupan
+Tupan
+U
+Ulong
+Ulong
+Upolu
+Upolu
+V
+Vakama
+Vakama
+Vang
+Vang
+Vanua
+Vanua
+Vata
+Vata
+Vavau
+Vavau
+Ventanas
+Ventanas
+Villains
+Villains
+Vinaka
+Vinaka
+Visayas
+Visayas
+Viveros
+Viveros
+Vokai
+Vokai
+Vuku
+Vuku
+W
+Wakai
+Wakai
+Wasai
+Wasai
+X
+Xhakúm
+Xhakúm
+Y
+Yanuya
+Yanuya
+Yara
+Yara
+Yasur
+Yasur
+Yawa
+Yawa
+Yaxha
+Yaxha
+Yin Yang
+Yin Yang
+Z
+Zafiro
+Zafiro
+Zapatera
+Zapatera
+Zhan Hu
+Zhan Hu

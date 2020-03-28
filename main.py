@@ -1,4 +1,5 @@
 from random import randint, choice, shuffle, normalvariate
+from itertools import cycle
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -13,6 +14,7 @@ def import_names():
     return names
 
 NAMES = import_names()
+GENDERS = cycle(['M','F'])
 
 def generate_name(gender):
     first = choice(NAMES[gender]).title()
@@ -36,6 +38,7 @@ class Player():
         self.social = randint(1,5)
         self.physical = randint(1,5)
 
+        self.tribe = None
         self.eliminated = False
 
     def fullname(self):
@@ -59,29 +62,48 @@ class Player():
         print(f'Physical: {self.physical}')
         print(f'Overall: {self.strength()}')
 
-class Game():
-    def __init__(self,tribes=3,players=18):
-        self.tribes = [Tribe(x,players/tribes) for x in range(tribes)]
-        #self.tribes.append(Tribe('Jury',0,False))
+    def move(self,new_tribe):
+        new_tribe.add_player(self)
 
-    def active_tribes(self):
-        return [tribe for tribe in self.tribes if tribe.active==True]
+class Game():
+
+    __gameid = 0
+
+    def __init__(self,tribes=2,players=20):
+
+        if (players/tribes) % 1 != 0 or (players/2) % 1 != 0:
+            raise GameSetupError
+
+        self.id = Game.__gameid
+        Game.__gameid += 1
+
+        self.day = 1
+
+        self.tribes = [Tribe() for x in range(tribes)]
+        self.players = [Player(next(GENDERS)) for x in range(players)]
+        self.assign_players()
+
+    def assign_players(self, random=False):
+        if random:
+            shuffle(self.players)
+        tr = cycle(self.tribes)
+        for player in self.players:
+            next(tr).add_player(player)
 
     def show_tribes(self):
         for tribe in self.active_tribes():
             tribe.show_players()
 
 class Tribe():
-    def __init__(self,id,players,active=True):
+    __tribeId = 0
 
-        self.id = id
+    def __init__(self,active=True):
+
+        self.id = Tribe.__tribeId
+        Tribe.__tribeId += 1
         self.name = choice(NAMES['tribes'])
         self.active = active
-
-        players_per_gender = int(players/2)
-        self.players = [Player('M') for x in range(players_per_gender)]
-        self.players = self.players + [Player('F') for x in range(players_per_gender)]
-        # shuffle(self.players)
+        self.players = []
 
     def show_players(self):
         print(f'{self.name}: {self.players}')
@@ -89,6 +111,11 @@ class Tribe():
     def __repr__(self):
         return self.name
 
+    def add_player(self,player):
+        if player.tribe != None:
+            player.tribe.players.remove(player)
+        self.players.append(player)
+        player.tribe = self
 
 class Challenge():
     def __init__(self,tribes):
@@ -115,8 +142,14 @@ class Challenge():
     def calculate_strengths(self):
         return [sum([p.physical for p in tribe.players]) for tribe in self.tribes]
 
-
+class GameSetupError(Exception):
+    pass
 
 # g = Game()
 # g.show_tribes()
 # c = Challenge(g.tribes)
+
+# players_per_gender = int(players/2)
+# self.players = [Player('M') for x in range(players_per_gender)]
+# self.players = self.players + [Player('F') for x in range(players_per_gender)]
+# shuffle(self.players)

@@ -15,4 +15,4 @@ def home():
 @app.route('/list/')
 def list():
     g = reset_game()
-    return render_template('list.html',title='List',tribes=g.tribes)
+    return render_template('list.html',title='List',tribes=g.tribes,game=g)

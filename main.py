@@ -26,11 +26,11 @@ def generate_name(gender):
     return (first,last)
 
 game_parameters = {
-    'players' : 16,
+    'players' : 18,
     'days' : 39,
-    'jury' : 7,
+    'jury' : 10,
     'early_merge' : randint(0,2),
-    'final' : 2,
+    'final' : 3,
     'tribes' : 2,
 }
 
@@ -54,6 +54,7 @@ class Game():
         Game.__gameid += 1
 
         self.day = 1
+        self.gameon = True
 
         self.tribes = [Tribe() for x in range(tribes)]
         self.old_tribes = []
@@ -103,8 +104,11 @@ class Game():
             return None
 
     def get_next_event(self):
-        event = list(filter(lambda x:x.complete == False, self.schedule.events))[0]
-        return event
+        if self.gameon:
+            event = list(filter(lambda x:x.complete == False, self.schedule.events))[0]
+            return event
+        else:
+            return self.schedule.events[-1]
 
     def next_event(self):
         return self.get_next_event().id
@@ -188,6 +192,7 @@ class Tribe():
         player.tribe = self
 
     def eliminate(self,player):
+        player.eliminated = True
         self.players.remove(player)
         player.tribe = None
 

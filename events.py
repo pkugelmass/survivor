@@ -12,6 +12,7 @@ class Schedule():
     def add_event(self,event):
         self.events.append(event)
         self.sort_events()
+        return event
 
     def sort_events(self):
         self.events = sorted(self.events, key=lambda x: x.timestamp())
@@ -97,7 +98,10 @@ class Event():
         self.end()
         self.game_changes(game)
         self.complete = True
-        game.day = game.get_next_event().day
+        try:
+            game.day = game.get_next_event().day
+        except:
+            pass
 
     def start(self):
         pass
@@ -147,6 +151,12 @@ class TribalImmunity(TribesMixin,Challenge):
         self.result.immunity = True
         losing_tribes = list(set(self.who) - set([self.result]))
         self.record('{}, I\'ll see you at tribal council.'.format(losing_tribes))
+
+    def game_changes(self,game):
+        self.complete = True
+        going_to_tribal = [x for x in game.tribes if x.immunity == False][0]
+        upcoming_tribal = list(filter(lambda x: not x.complete,game.schedule.event_type(TribalCouncil)))[0]
+        upcoming_tribal.name = upcoming_tribal.name + ' ({})'.format(going_to_tribal.name)
 
 class TribalReward(TribesMixin,Challenge):
     def __init__(self,day,**kwargs):
@@ -201,7 +211,7 @@ class Swap(Event):
     def game_changes(self,game):
         newtribes = cycle(game.tribes)
         shuffle(game.players)
-        for player in game.players:
+        for player in game.active_players():
             move_to = next(newtribes)
             if move_to == player.tribe:
                 verb = 'stays on'
@@ -222,10 +232,13 @@ class TribalCouncil(Event):
         self.time = 19
         self.name = 'Tribal Council'
         self.votes = {}
+        self.jury = []
 
     def find_participants(self,game):
         tribe = list(filter(lambda x: x.immunity == False, game.tribes))[0]
         self.who = tribe.players
+        if len(game.jury) > 0:
+            self.jury = game.jury
 
     def count_votes(self):
         return Counter(self.votes.values())
@@ -258,19 +271,50 @@ class TribalCouncil(Event):
         self.result = cnt.most_common(1)[0][0]
         self.record('Next person voted off Survivor is {}; bring me your torch.'.format(self.result.first))
         self.record('The tribe has spoken. It\'s time for you to go.')
-        self.result.eliminated = True
         self.result.tribe.eliminate(self.result)
 
 class JuryTribalCouncil(TribalCouncil):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
-        self.time = 19
         self.name = 'Jury Tribal Council'
 
-class FinalTribal(TribalCouncil):
+    def start(self):
+        if len(self.jury) > 0:
+            self.record('Let\'s welcome the members of our jury.'.format(self.jury))
+
+    def game_changes(self,game):
+        game.jury.append(self.result)
+        self.record('{} will now join the jury.'.format(self.result.first))
+
+class FinalTribal(JuryTribalCouncil):
+
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Final Tribal Council'
+
+    def middle(self):
+        while self.votes_tied():
+            for player in self.jury:
+                vote = None
+                while vote == None:
+                    my_vote = choice(self.who)
+                    if my_vote != player and my_vote.immunity == False:
+                        vote = my_vote
+                self.votes[player] = my_vote
+
+    def end(self):
+        cnt = self.count_votes()
+        self.record('I\'ll read the votes.')
+        self.record(cnt.most_common())
+        self.result = cnt.most_common(1)[0][0]
+        self.record('The winner of Survivor... {}!'.format(self.result.first))
+        for loser in self.who[::-1]:
+            if loser != self.result:
+                loser.tribe.eliminate(loser)
+
+    def game_changes(self,game):
+        print('final game changes')
+        game.gameon = False
 
 def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,2), game=None):
 
@@ -308,11 +352,12 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
         natural_tribal_days = natural_tribal_days[-to_remove]
 
     tribal_days = natural_tribal_days + extra_tribals
-    for i,x in enumerate(tribal_days):
+    for i,x in enumerate(sorted(tribal_days)):
         if i < players - final - jury:
-            s.add_event(TribalCouncil(x))
+            tribal = s.add_event(TribalCouncil(x))
         else:
-            s.add_event(JuryTribalCouncil(x))
+            tribal = s.add_event(JuryTribalCouncil(x))
+        tribal.name = '{} #{}'.format(tribal.name,i+1)
 
     # Merge
     merge_day = s.event_type(TribalCouncil)[-jury-2-early_merge].day+1

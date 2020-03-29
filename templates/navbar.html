@@ -35,13 +35,14 @@
          </li>
 
 
-         <li class="nav-item nav-link text-white p-r-3">Game: {{game.id}}</li>
+         <li class="nav-item nav-link text-white p-r-3">Game: {{game.gameon}}</li>
          <li class="nav-item nav-link text-white">Day: {{game.day}}</li>
-
-         <li class="nav-item nav-link text-white"><a href="/next/">
-           <button type="button" class="btn btn-primary btn-sm small">
-             Next: {{game.get_next_event()}}</button>
-         </a></li>
+         {% if game.gameon %}
+           <li class="nav-item nav-link text-white"><a href="/next/">
+             <button type="button" class="btn btn-primary btn-sm small">
+               Next: {{game.get_next_event()}}</button>
+           </a></li>
+         {% endif %}
 
        </ul>
 

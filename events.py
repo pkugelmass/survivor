@@ -322,7 +322,7 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
     swap_day = choice([x+1 for x in s.tribal_days()[2:5]])
     if swap_day < merge_day:
         s.add_event(Swap(swap_day))
-    s.add_event(Swap(2))
+    #s.add_event(Swap(2))
 
     # Challenges
     for tribal in s.event_type(TribalCouncil):

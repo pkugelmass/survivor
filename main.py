@@ -1,5 +1,6 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
+from events import generate_schedule
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -8,7 +9,8 @@ def import_names():
         'M' : open('data/male-first-names.txt','r').read().split('\n'),
         'F' : open('data/female-first-names.txt','r').read().split('\n'),
         'L' : open('data/last-names.txt','r').read().split('\n'),
-        'tribes' : open('data/tribe-names.txt','r').read().split('\n')
+        'tribes' : open('data/tribe-names.txt','r').read().split('\n'),
+        'jobs' : open('data/occupations.txt','r').read().split('\n')
     }
     names['tribes'] = list(set([x for x in names['tribes'] if len(x)>1]))
     return names
@@ -33,12 +35,14 @@ class Player():
         self.first, self.last = generate_name(gender)
 
         self.age = int(normalvariate(33,8)//1)
+        self.job = choice(NAMES['jobs'])
 
         self.strategy = randint(1,5)
         self.social = randint(1,5)
         self.physical = randint(1,5)
 
         self.tribe = None
+        self.immunity = False
         self.eliminated = False
 
     def fullname(self):
@@ -69,10 +73,13 @@ class Game():
 
     __gameid = 0
 
-    def __init__(self,tribes=2,players=20):
+    def __init__(self,game_parameters):
 
-        if (players/tribes) % 1 != 0 or (players/2) % 1 != 0:
-            raise GameSetupError
+        check_parameters(game_parameters)
+        self.parameters = game_parameters
+
+        players = self.parameters['players']
+        tribes = self.parameters['tribes']
 
         self.id = Game.__gameid
         Game.__gameid += 1
@@ -82,6 +89,8 @@ class Game():
         self.tribes = [Tribe() for x in range(tribes)]
         self.players = [Player(next(GENDERS)) for x in range(players)]
         self.assign_players()
+
+        self.schedule = generate_schedule(game=self)
 
     def assign_players(self, random=False):
         if random:
@@ -94,6 +103,23 @@ class Game():
         for tribe in self.active_tribes():
             tribe.show_players()
 
+    def get_event(self,eventId):
+        try:
+            event = list(filter(lambda x: x.id == eventId, self.schedule.events))[0]
+            return event
+        except:
+            return None
+
+    def get_next_event(self):
+        event = list(filter(lambda x:x.complete == False, self.schedule.events))[0]
+        return event
+
+    def next_event(self):
+        return self.get_next_event().id
+
+    def run_next(self):
+        self.get_next_event().run(self)
+
 class Tribe():
     __tribeId = 0
 
@@ -104,6 +130,7 @@ class Tribe():
         self.name = choice(NAMES['tribes'])
         self.active = active
         self.players = []
+        self.immunity = False
 
     def show_players(self):
         print(f'{self.name}: {self.players}')
@@ -117,39 +144,25 @@ class Tribe():
         self.players.append(player)
         player.tribe = self
 
-class Challenge():
-    def __init__(self,tribes):
-        self.tribes = tribes
-        self.bench = []
-        self.equalize_tribes()
-        self.strengths = self.calculate_strengths()
-        print(f'It\'s a challenge between the tribes {self.tribes}.')
-        print(f'Relative strengths are {self.strengths}.')
+    def eliminate(self,player):
+        self.players.remove(player)
+        player.tribe = None
 
-    def equalize_tribes(self):
-        sizes = [len(t.players) for t in self.tribes]
-        smallest = min(sizes)
-        for t in self.tribes:
-            sitout = len(t.players) - smallest
-            if sitout > 0:
-                print(f'{t} must sit {sitout} player(s) out.')
-                for x in range(sitout):
-                    p = choice(tribe.players)
-                    self.bench.append(p)
-                    t.players.remove(p)
-                    print(f'{p} takes a seat on the bench.')
 
-    def calculate_strengths(self):
-        return [sum([p.physical for p in tribe.players]) for tribe in self.tribes]
 
 class GameSetupError(Exception):
     pass
 
-# g = Game()
-# g.show_tribes()
-# c = Challenge(g.tribes)
 
-# players_per_gender = int(players/2)
-# self.players = [Player('M') for x in range(players_per_gender)]
-# self.players = self.players + [Player('F') for x in range(players_per_gender)]
-# shuffle(self.players)
+game_parameters = {
+    'players' : 16,
+    'days' : 39,
+    'jury' : 10,
+    'early_merge' : randint(0,2),
+    'final' : 3,
+    'tribes' : 2,
+}
+
+def check_parameters(par):
+    if (par['players']/par['tribes']) % 1 != 0:
+        raise GameSetupError('Uneven number of players.')

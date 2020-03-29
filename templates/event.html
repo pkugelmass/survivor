@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row m-3 p-3">
+
+  <h3>{{event}}</h3>
+
+  <ul>
+    {% for line in event.log %}
+      <li>{{line}}</li>
+    {% endfor %}
+  </ul>
+
+
+</div>
+
+{% endblock %}

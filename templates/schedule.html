@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row m-3 p-3">
+
+  <table class="table table-hover table-sm">
+    <tr class="thead-light">
+      <th>ID</th>
+      <th>Day/Time</th>
+      <th>Event</th>
+      <th># Players</th>
+      <th># Tribes</th>
+      <th>Complete?</th>
+      <th>Result</th>
+    </tr>
+    {% for event in game.schedule.events %}
+      <tr>
+        <td>{{event.id}}</td>
+        <td>{{event.timestamp()}}</td>
+        <td>
+          {% if event.complete %}
+            <a href="/event/{{event.id}}">{{event.name}}</a>
+          {% else %}
+            {{event.name}}
+          {% endif %}
+        </td>
+        <td>{{event.num_players}}</td>
+        <td>{{event.num_tribes}}</td>
+        <td>{{event.complete}}</td>
+        <td>{% if event.result %}
+              {{event.result}}
+            {% elif game.next_event() == event.id %}
+              <a href="/run/{{event.id}}">
+                <button type="button" class="btn btn-primary btn-sm small">Run</button>
+              </a>
+            {% endif %}</td>
+      </tr>
+    {% endfor %}
+
+  </table>
+
+</div>
+
+{% endblock %}

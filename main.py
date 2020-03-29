@@ -1,6 +1,7 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
 from events import generate_schedule
+
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -55,7 +56,11 @@ class Game():
         self.day = 1
 
         self.tribes = [Tribe() for x in range(tribes)]
+        self.old_tribes = []
+
         self.players = [Player(next(GENDERS)) for x in range(players)]
+        # self.eliminated = []
+        self.jury = []
         self.assign_players()
 
         self.schedule = generate_schedule(game=self)
@@ -69,6 +74,22 @@ class Game():
         else:
             [next(tr).add_player(x) for x in self.players if x.gender == 'M']
             [next(tr).add_player(x) for x in self.players if x.gender == 'F']
+
+    def active_players(self):
+        return [x for x in self.players if not x.eliminated]
+
+    def eliminated_players(self):
+        return [x for x in self.players if x.eliminated]
+
+    def add_tribe(self,**kwargs):
+        new_tribe = Tribe(**kwargs)
+        self.tribes.append(new_tribe)
+        return new_tribe
+
+    def retire_tribe(self,tribe):
+        if tribe in self.tribes:
+            self.old_tribes.append(tribe)
+            self.tribes.remove(tribe)
 
     def show_tribes(self):
         for tribe in self.active_tribes():
@@ -141,12 +162,16 @@ class Player():
 class Tribe():
     __tribeId = 0
 
-    def __init__(self,active=True):
+    def __init__(self,active=True, name=None):
 
         self.id = Tribe.__tribeId
         Tribe.__tribeId += 1
-        self.name = choice(NAMES['tribes'])
-        self.active = active
+
+        if name:
+            self.name = name
+        else:
+            self.name = choice(NAMES['tribes'])
+
         self.players = []
         self.immunity = False
 

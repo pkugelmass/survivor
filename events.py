@@ -1,4 +1,4 @@
-from random import randint,choice,sample
+from random import randint,choice,sample,shuffle
 from collections import Counter
 from itertools import cycle
 
@@ -95,6 +95,7 @@ class Event():
         self.start()
         self.middle()
         self.end()
+        self.game_changes(game)
         self.complete = True
         game.day = game.get_next_event().day
 
@@ -106,6 +107,9 @@ class Event():
         self.record('The event selected {}.'.format(self.result))
 
     def end(self):
+        pass
+
+    def game_changes(self,game):
         pass
 
 class Challenge(Event):
@@ -160,6 +164,25 @@ class Merge(Event):
         self.time = 10
         self.name = "Merge"
 
+    def find_participants(self,game):
+        self.who = game.tribes
+
+    def start(self):
+        self.record('We are merging!')
+
+    def middle(self):
+        pass
+
+    def game_changes(self,game):
+        [game.retire_tribe(t) for t in game.tribes[::-1]]
+        new_name = 'MergedTribe'
+        self.record('The new tribe is called {}.'.format(new_name))
+        merged_tribe = game.add_tribe(name=new_name)
+        [merged_tribe.add_player(x) for x in game.active_players()]
+        self.record('Let\'s have a look at the new tribe.')
+        self.record({x:x.players for x in self.who})
+        self.result = merged_tribe
+
 class Swap(Event):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
@@ -173,20 +196,25 @@ class Swap(Event):
         self.record('Drop your buffs!')
 
     def middle(self):
-        newtribes = cycle(self.who)
-        for tribe in self.who:
-            for player in tribe.players:
-                move_to = next(newtribes)
-                if move_to == player.tribe:
-                    verb = 'stays on'
-                else:
-                    verb = 'moves to'
-                move_to.add_player(player)
-                self.record('{} {} {}.'.format(player.first, verb, move_to))
+        pass
 
-    def end(self):
+    def game_changes(self,game):
+        newtribes = cycle(game.tribes)
+        shuffle(game.players)
+        for player in game.players:
+            move_to = next(newtribes)
+            if move_to == player.tribe:
+                verb = 'stays on'
+            else:
+                verb = 'moves to'
+            move_to.add_player(player)
+            self.record('{} {} {}.'.format(player.first, verb, move_to))
         self.record('Let\'s have a look at the new tribes.')
         self.record({x:x.players for x in self.who})
+        self.result = self.who
+
+    def end(self):
+        pass
 
 class TribalCouncil(Event):
     def __init__(self,day,**kwargs):
@@ -292,7 +320,9 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
 
     # Swap
     swap_day = choice([x+1 for x in s.tribal_days()[2:5]])
-    s.add_event(Swap(swap_day))
+    if swap_day < merge_day:
+        s.add_event(Swap(swap_day))
+    s.add_event(Swap(2))
 
     # Challenges
     for tribal in s.event_type(TribalCouncil):

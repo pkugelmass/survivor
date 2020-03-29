@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row m-3 p-3">
+
+    <h3>Game Story</h3>
+
+  <table class="table table-sm">
+    <tr>
+      <th>Event</th>
+      <th>What Happened</th>
+    </tr>
+    {% for event in game.schedule.events %}
+      {% if event.complete %}
+        <tr>
+          <td>{{event}}</td>
+          <td><ul>
+            {% for item in event.log %}
+            <li>{{item}}</li>
+            {% endfor %}
+          </ul></td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

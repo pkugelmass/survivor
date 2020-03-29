@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 app = Flask(__name__)
 
 from main import Game, game_parameters
@@ -51,3 +51,13 @@ def player(playerid):
     id = int(playerid)
     this_player = [x for x in g.players if x.id == id][0]
     return render_template('player.html',title='tribe',game=g,player=this_player)
+
+@app.route('/next/')
+def next():
+    g.run_next()
+    old_url = request.referrer
+    return redirect(old_url)
+
+@app.route('/story/')
+def story():
+    return render_template('story.html',title='Story',game=g)

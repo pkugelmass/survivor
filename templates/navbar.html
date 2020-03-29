@@ -9,6 +9,7 @@
        <li class="nav-item"><a class="nav-link" href="/new">Reset</a></li>
        <li class="nav-item"><a class="nav-link" href="/list">List</a></li>
        <li class="nav-item"><a class="nav-link" href="/schedule">Schedule</a></li>
+       <li class="nav-item"><a class="nav-link" href="/story">Story</a></li>
      </ul>
 
      {% if game %}
@@ -37,6 +38,11 @@
 
          <li class="nav-item nav-link text-white p-r-3">Game: {{game.id}}</li>
          <li class="nav-item nav-link text-white">Day: {{game.day}}</li>
+
+         <li class="nav-item nav-link text-white"><a href="/next/">
+           <button type="button" class="btn btn-primary btn-sm small">
+             Next: {{game.get_next_event()}}</button>
+         </a></li>
 
        </ul>
 

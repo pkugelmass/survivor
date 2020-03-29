@@ -45,3 +45,9 @@ def tribe(tribeid):
     id = int(tribeid)
     this_tribe = [x for x in g.tribes if x.id == id][0]
     return render_template('tribe.html',title='tribe',game=g,tribe=this_tribe)
+
+@app.route('/player/<playerid>/')
+def player(playerid):
+    id = int(playerid)
+    this_player = [x for x in g.players if x.id == id][0]
+    return render_template('player.html',title='tribe',game=g,player=this_player)

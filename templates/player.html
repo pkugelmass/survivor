@@ -4,7 +4,7 @@
 
   <div class="row bg-light m-3 p-3" >
     <div class="col-lg-12">
-    <h3>{{tribe.name}}</h3>
+    <h3>{{player.fullname()}}</h3>
       <table class="table table-sm">
         <tr>
           <th>ID</th>
@@ -18,10 +18,9 @@
           <th>Physical</th>
           <th>Overall</th>
         </tr>
-        {% for player in tribe.players %}
           <tr>
             <td>{{player.id}}</td>
-            <td><a href="/player/{{player.id}}/">{{player.fullname()}}</a></td>
+            <td>{{player.fullname()}}</td>
             <td>{{player.age}}</td>
             <td>{{player.gender}}</td>
             <td>{{player.job}}</td>
@@ -31,7 +30,6 @@
             <td>{{player.physical}}</td>
             <td>{{player.strength()}}</td>
           </tr>
-        {% endfor %}
       </table>
       </div>
   </div>

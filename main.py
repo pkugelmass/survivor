@@ -24,6 +24,73 @@ def generate_name(gender):
     last = choice(NAMES['L']).title()
     return (first,last)
 
+game_parameters = {
+    'players' : 16,
+    'days' : 39,
+    'jury' : 7,
+    'early_merge' : randint(0,2),
+    'final' : 2,
+    'tribes' : 2,
+}
+
+def check_parameters(par):
+    if (par['players']/par['tribes']) % 1 != 0:
+        raise GameSetupError('Uneven number of players.')
+
+class Game():
+
+    __gameid = 0
+
+    def __init__(self,game_parameters):
+
+        check_parameters(game_parameters)
+        self.parameters = game_parameters
+
+        players = self.parameters['players']
+        tribes = self.parameters['tribes']
+
+        self.id = Game.__gameid
+        Game.__gameid += 1
+
+        self.day = 1
+
+        self.tribes = [Tribe() for x in range(tribes)]
+        self.players = [Player(next(GENDERS)) for x in range(players)]
+        self.assign_players()
+
+        self.schedule = generate_schedule(game=self)
+
+    def assign_players(self, random=True):
+        tr = cycle(self.tribes)
+        if random:
+            shuffle(self.players)
+            for player in self.players:
+                next(tr).add_player(player)
+        else:
+            [next(tr).add_player(x) for x in self.players if x.gender == 'M']
+            [next(tr).add_player(x) for x in self.players if x.gender == 'F']
+
+    def show_tribes(self):
+        for tribe in self.active_tribes():
+            tribe.show_players()
+
+    def get_event(self,eventId):
+        try:
+            event = list(filter(lambda x: x.id == eventId, self.schedule.events))[0]
+            return event
+        except:
+            return None
+
+    def get_next_event(self):
+        event = list(filter(lambda x:x.complete == False, self.schedule.events))[0]
+        return event
+
+    def next_event(self):
+        return self.get_next_event().id
+
+    def run_next(self):
+        self.get_next_event().run(self)
+
 class Player():
 
     __id = 0
@@ -71,57 +138,6 @@ class Player():
     def move(self,new_tribe):
         new_tribe.add_player(self)
 
-class Game():
-
-    __gameid = 0
-
-    def __init__(self,game_parameters):
-
-        check_parameters(game_parameters)
-        self.parameters = game_parameters
-
-        players = self.parameters['players']
-        tribes = self.parameters['tribes']
-
-        self.id = Game.__gameid
-        Game.__gameid += 1
-
-        self.day = 1
-
-        self.tribes = [Tribe() for x in range(tribes)]
-        self.players = [Player(next(GENDERS)) for x in range(players)]
-        self.assign_players()
-
-        self.schedule = generate_schedule(game=self)
-
-    def assign_players(self, random=True):
-        if random:
-            shuffle(self.players)
-        tr = cycle(self.tribes)
-        for player in self.players:
-            next(tr).add_player(player)
-
-    def show_tribes(self):
-        for tribe in self.active_tribes():
-            tribe.show_players()
-
-    def get_event(self,eventId):
-        try:
-            event = list(filter(lambda x: x.id == eventId, self.schedule.events))[0]
-            return event
-        except:
-            return None
-
-    def get_next_event(self):
-        event = list(filter(lambda x:x.complete == False, self.schedule.events))[0]
-        return event
-
-    def next_event(self):
-        return self.get_next_event().id
-
-    def run_next(self):
-        self.get_next_event().run(self)
-
 class Tribe():
     __tribeId = 0
 
@@ -150,21 +166,5 @@ class Tribe():
         self.players.remove(player)
         player.tribe = None
 
-
-
 class GameSetupError(Exception):
     pass
-
-
-game_parameters = {
-    'players' : 16,
-    'days' : 39,
-    'jury' : 7,
-    'early_merge' : randint(0,2),
-    'final' : 2,
-    'tribes' : 2,
-}
-
-def check_parameters(par):
-    if (par['players']/par['tribes']) % 1 != 0:
-        raise GameSetupError('Uneven number of players.')

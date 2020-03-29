@@ -1,5 +1,6 @@
 from random import randint,choice,sample
 from collections import Counter
+from itertools import cycle
 
 class Schedule():
     def __init__(self):
@@ -26,6 +27,9 @@ class Schedule():
 
     def event_type(self,theclass):
         return [x for x in self.events if isinstance(x,theclass)]
+
+    def tribal_days(self):
+        return [x.day for x in self.event_type(TribalCouncil)[:-1]]
 
     def print_schedule(self):
         for event in self.events:
@@ -160,7 +164,29 @@ class Swap(Event):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.time = 10
-        self.name = "Merge"
+        self.name = "Swap"
+
+    def find_participants(self,game):
+        self.who = game.tribes
+
+    def start(self):
+        self.record('Drop your buffs!')
+
+    def middle(self):
+        newtribes = cycle(self.who)
+        for tribe in self.who:
+            for player in tribe.players:
+                move_to = next(newtribes)
+                if move_to == player.tribe:
+                    verb = 'stays on'
+                else:
+                    verb = 'moves to'
+                move_to.add_player(player)
+                self.record('{} {} {}.'.format(player.first, verb, move_to))
+
+    def end(self):
+        self.record('Let\'s have a look at the new tribes.')
+        self.record({x:x.players for x in self.who})
 
 class TribalCouncil(Event):
     def __init__(self,day,**kwargs):
@@ -265,7 +291,8 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
     s.add_event(Merge(merge_day))
 
     # Swap
-    # Ok, maybe I add this in later.
+    swap_day = choice([x+1 for x in s.tribal_days()[2:5]])
+    s.add_event(Swap(swap_day))
 
     # Challenges
     for tribal in s.event_type(TribalCouncil):

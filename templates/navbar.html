@@ -9,26 +9,37 @@
        <li class="nav-item"><a class="nav-link" href="/new">Reset</a></li>
        <li class="nav-item"><a class="nav-link" href="/list">List</a></li>
        <li class="nav-item"><a class="nav-link" href="/schedule">Schedule</a></li>
+     </ul>
 
-       {% if tribes %}
+     {% if game %}
+       <ul class="navbar-nav ml-auto">
          <li class="nav-item dropdown">
            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
              Tribes
            </a>
            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-             {% for tribe in tribes %}
-             <a class="dropdown-item" href="#">{{tribe.name}}</a>
+             {% for tribe in game.tribes %}
+             <a class="dropdown-item" href="/tribe/{{tribe.id}}/">{{tribe.name}}</a>
              {% endfor %}
            </div>
          </li>
-        {% endif %}
-     </ul>
+         <li class="nav-item dropdown">
+           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             Players
+           </a>
+           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+             {% for player in game.players %}
+             <a class="dropdown-item" href="/player/{{player.id}}/">{{player.first}}</a>
+             {% endfor %}
+           </div>
+         </li>
 
-     {% if game %}
-       <ul class="navbar-nav ml-auto">
+
          <li class="nav-item nav-link text-white p-r-3">Game: {{game.id}}</li>
          <li class="nav-item nav-link text-white">Day: {{game.day}}</li>
+
        </ul>
+
       {% endif %}
    </div>
 

@@ -34,5 +34,14 @@ def event(eventid):
 @app.route('/run/<eventid>/')
 def run(eventid):
     this_event = g.get_event(int(eventid))
-    this_event.run(g)
-    return render_template('event.html',title='event',game=g,event=this_event)
+    if this_event.complete == False:
+        this_event.run(g)
+        return render_template('event.html',title='event',game=g,event=this_event)
+    else:
+        return redirect(url_for('event',eventid=eventid))
+
+@app.route('/tribe/<tribeid>/')
+def tribe(tribeid):
+    id = int(tribeid)
+    this_tribe = [x for x in g.tribes if x.id == id][0]
+    return render_template('tribe.html',title='tribe',game=g,tribe=this_tribe)

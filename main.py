@@ -10,7 +10,8 @@ def import_names():
         'F' : open('data/female-first-names.txt','r').read().split('\n'),
         'L' : open('data/last-names.txt','r').read().split('\n'),
         'tribes' : open('data/tribe-names.txt','r').read().split('\n'),
-        'jobs' : open('data/occupations.txt','r').read().split('\n')
+        'jobs' : open('data/occupations.txt','r').read().split('\n'),
+        'towns' : open('data/hometowns.txt','r').read().split('\n')
     }
     names['tribes'] = list(set([x for x in names['tribes'] if len(x)>1]))
     return names
@@ -36,6 +37,7 @@ class Player():
 
         self.age = int(normalvariate(33,8)//1)
         self.job = choice(NAMES['jobs'])
+        self.hometown = choice(NAMES['towns'])
 
         self.strategy = randint(1,5)
         self.social = randint(1,5)
@@ -92,7 +94,7 @@ class Game():
 
         self.schedule = generate_schedule(game=self)
 
-    def assign_players(self, random=False):
+    def assign_players(self, random=True):
         if random:
             shuffle(self.players)
         tr = cycle(self.tribes)
@@ -157,9 +159,9 @@ class GameSetupError(Exception):
 game_parameters = {
     'players' : 16,
     'days' : 39,
-    'jury' : 10,
+    'jury' : 7,
     'early_merge' : randint(0,2),
-    'final' : 3,
+    'final' : 2,
     'tribes' : 2,
 }
 

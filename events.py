@@ -87,12 +87,12 @@ class Event():
 
     def run(self,game):
         self.find_participants(game)
-        game.day = self.day
         self.record('{} - {} with {}.'.format(self.name,self.timestamp(),self.who))
         self.start()
         self.middle()
         self.end()
         self.complete = True
+        game.day = game.get_next_event().day
 
     def start(self):
         pass

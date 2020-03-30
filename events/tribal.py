@@ -1,6 +1,6 @@
 from .events import Event
 from collections import Counter
-from random import choice
+from numpy.random import choice
 
 class TribalCouncil(Event):
     def __init__(self,day,**kwargs):
@@ -10,11 +10,33 @@ class TribalCouncil(Event):
         self.votes = {}
         self.jury = []
 
-    def find_participants(self,game):
-        tribe = list(filter(lambda x: x.immunity == False, game.tribes))[0]
-        self.who = tribe.players
-        if len(game.jury) > 0:
-            self.jury = game.jury
+    def run(self,game):
+        self.participants = [x for x in game.tribes if not x.immunity][0].players
+        self.record('Welcome to Tribal Council, {}.'.format(self.participants))
+        self.record('Light your torches...')
+        vuln = self.calculate_vulnerability()
+        self.vote(vuln)
+        self.read_votes()
+        self.eliminate_player(game)
+        self.mark_complete()
+
+    def calculate_vulnerability(self):
+        vulnerability = [1/(p.strategy * p.social) for p in self.participants]
+        norm = [v/sum(vulnerability) for v in vulnerability]
+        vuln = dict(zip(self.participants,norm))
+        self.record('Relative vulnerability: {}'.format(vuln))
+        return vuln
+
+    def vote(self,vulnerability):
+        self.record('It is... time to vote. {}, you\'re up...'.format(self.participants[0]))
+        while self.votes_tied():
+            for player in self.participants:
+                vote = None
+                while vote == None:
+                    my_vote = choice(list(vulnerability.keys()),p=list(vulnerability.values()))
+                    if my_vote != player and my_vote.immunity == False:
+                        vote = my_vote
+                self.votes[player] = my_vote
 
     def count_votes(self):
         return Counter(self.votes.values())
@@ -27,32 +49,26 @@ class TribalCouncil(Event):
                 return False
         return True
 
-    def start(self):
-        self.record('Light your torches...')
-
-    def middle(self):
-        while self.votes_tied():
-            for player in self.who:
-                vote = None
-                while vote == None:
-                    my_vote = choice(self.who)
-                    if my_vote != player and my_vote.immunity == False:
-                        vote = my_vote
-                self.votes[player] = my_vote
-
-    def end(self):
+    def read_votes(self):
         cnt = self.count_votes()
         self.record('I\'ll read the votes.')
         self.record(cnt.most_common())
         self.result = cnt.most_common(1)[0][0]
         self.record('Next person voted off Survivor is {}; bring me your torch.'.format(self.result.first))
         self.record('The tribe has spoken. It\'s time for you to go.')
-        self.result.tribe.eliminate(self.result)
+
+    def eliminate_player(self,game):
+        game.eliminate(self.result)
 
 class JuryTribalCouncil(TribalCouncil):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Jury Tribal Council'
+
+    def introduce_jury(self,game):
+        if len(game.jury) > 0:
+            self.jury = game.jury
+            self.record('Let\'s welcome the members of our jury, {}.'.format(self.jury))
 
     def start(self):
         if len(self.jury) > 0:

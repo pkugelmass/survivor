@@ -92,6 +92,11 @@ class Game():
             self.old_tribes.append(tribe)
             self.tribes.remove(tribe)
 
+    def eliminate(self,player):
+        player.eliminated = True
+        player.tribe.players.remove(player)
+        player.tribe = None
+
     def show_tribes(self):
         for tribe in self.active_tribes():
             tribe.show_players()
@@ -194,11 +199,6 @@ class Tribe():
             player.tribe.players.remove(player)
         self.players.append(player)
         player.tribe = self
-
-    def eliminate(self,player):
-        player.eliminated = True
-        self.players.remove(player)
-        player.tribe = None
 
 class GameSetupError(Exception):
     pass

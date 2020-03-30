@@ -15,16 +15,16 @@ class TribalCouncil(Event):
         self.record('Welcome to Tribal Council, {}.'.format(self.participants))
         self.record('Light your torches...')
         vuln = self.calculate_vulnerability()
+        self.report_probabilities(vuln) #Event
         self.vote(vuln)
         self.read_votes()
         self.eliminate_player(game)
         self.mark_complete()
 
     def calculate_vulnerability(self):
-        vulnerability = [1/(p.strategy * p.social) for p in self.participants]
+        vulnerability = [1/(p.strategy + p.social) for p in self.participants]
         norm = [v/sum(vulnerability) for v in vulnerability]
         vuln = dict(zip(self.participants,norm))
-        self.record('Relative vulnerability: {}'.format(vuln))
         return vuln
 
     def vote(self,vulnerability):

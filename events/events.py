@@ -36,5 +36,6 @@ class Event():
     def mark_complete(self):
         self.complete = True
 
-    def say_goodbye(self,game):
-        pass
+    def report_probabilities(self,prob_dict):
+        percentages = ['{}%'.format(round(x,3)*100) for x in prob_dict.values()]
+        self.record('Looks like... {}'.format(dict(zip(prob_dict.keys(),percentages))))

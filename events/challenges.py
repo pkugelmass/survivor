@@ -25,10 +25,10 @@ class TribalMixin:
         sizes = [len(x.players) for x in self.participants]
         if max(sizes) != min(sizes):
             for tribe in self.participants:
-                sit_out = len(x.players) - min(sizes)
+                sit_out = len(tribe.players) - min(sizes)
                 if sit_out > 0:
                     self.record('{} has to sit out {} players.'.format(tribe,sit_out))
-                    sit_outs = sample(tribe.players,sit_out)
+                    sit_outs = choice(tribe.players,size=sit_out)
                     bench[tribe] = sit_outs
                     self.record('{} will sit out for {}; take a seat on the bench.'.format(sit_outs,tribe))
         return bench
@@ -41,7 +41,6 @@ class TribalMixin:
             tribestrengths.append(strength)
         relative = [round(float(x)/sum(tribestrengths),3) for x in tribestrengths]
         strengths = dict(zip(self.participants,relative))
-        self.record('Relative strengths: {}'.format(strengths))
         return strengths
 
     def run_challenge(self,strength):
@@ -78,6 +77,7 @@ class TribalReward(TribalMixin, RewardMixin, Challenge):
         self.record('Getting a look at our tribes, {}.'.format(self.participants))
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
+        self.report_probabilities(strengths) #Event
         self.run_challenge(strengths) #TribalMixin
         self.announce_winner() #RewardMixin
         self.mark_complete() #Event
@@ -93,6 +93,7 @@ class TribalImmunity(TribalMixin, ImmunityMixin, Challenge):
         self.take_back_immunity() #ImmunityMixin
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
+        self.report_probabilities(strengths) #Event
         self.run_challenge(strengths) #TribalMixin
         self.announce_winner() #ImmunityMixin
         self.award_immunity() #ImmunityMixin

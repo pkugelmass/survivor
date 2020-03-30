@@ -1,6 +1,6 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
-from events import generate_schedule
+from events.schedule import generate_schedule
 
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))

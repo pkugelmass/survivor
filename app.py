@@ -61,3 +61,8 @@ def next():
 @app.route('/story/')
 def story():
     return render_template('story.html',title='Story',game=g)
+
+@app.route('/sim/')
+def sim():
+    g.run_all()
+    return redirect(url_for('story'))

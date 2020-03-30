@@ -1,6 +1,6 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
-from events import generate_schedule
+from events.schedule import generate_schedule
 
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -115,6 +115,10 @@ class Game():
 
     def run_next(self):
         self.get_next_event().run(self)
+
+    def run_all(self):
+        while self.gameon:
+            self.run_next()
 
 class Player():
 

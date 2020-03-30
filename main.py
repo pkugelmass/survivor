@@ -82,8 +82,8 @@ class Game():
     def eliminated_players(self):
         return [x for x in self.players if x.eliminated]
 
-    def add_tribe(self,**kwargs):
-        new_tribe = Tribe(**kwargs)
+    def add_tribe(self,name=None):
+        new_tribe = Tribe(name)
         self.tribes.append(new_tribe)
         return new_tribe
 
@@ -175,7 +175,7 @@ class Player():
 class Tribe():
     __tribeId = 0
 
-    def __init__(self,active=True, name=None):
+    def __init__(self,name=None):
 
         self.id = Tribe.__tribeId
         Tribe.__tribeId += 1

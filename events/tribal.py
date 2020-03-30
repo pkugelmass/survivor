@@ -57,6 +57,8 @@ class JuryTribalCouncil(TribalCouncil):
     def start(self):
         if len(self.jury) > 0:
             self.record('Let\'s welcome the members of our jury.'.format(self.jury))
+        immune = [x for x in self.who if x.immunity][0]
+        self.record('{} has immunity and is safe tonight.'.format(immune))
 
     def game_changes(self,game):
         game.jury.append(self.result)

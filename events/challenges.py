@@ -6,15 +6,33 @@ class Challenge(Event):
         super().__init__(day,**kwargs)
         self.time = 12
 
-class IndividualImmunity(Challenge):
+class IndividualMixin():
+
+    def find_participants(self,game):
+        self.who = game.active_players()
+
+class IndividualImmunity(IndividualMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Individual Immunity'
 
-class IndividualReward(Challenge):
+    def start(self):
+        for player in self.who:
+            if player.immunity == True:
+                self.record('I\'ll take the necklace back from {}.'.format(player))
+                self.record('Individual immunity is back up for grabs.')
+                player.immunity = False
+
+    def end(self):
+        self.result.immunity = True
+        self.record('{} wins immunity!'.format(self.result.first))
+
+class IndividualReward(IndividualMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Individual Reward'
+
+
 
 class TribesMixin:
     def find_participants(self,game):

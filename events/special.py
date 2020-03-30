@@ -1,5 +1,6 @@
 from .events import Event
 from itertools import cycle
+from random import shuffle
 
 class Merge(Event):
     def __init__(self,day,**kwargs):

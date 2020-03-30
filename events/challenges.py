@@ -1,4 +1,4 @@
-from .events import Event
+from .events import Event, htmlify
 from .tribal import TribalCouncil
 from numpy.random import sample, choice
 from numpy import mean
@@ -74,7 +74,8 @@ class TribalReward(TribalMixin, RewardMixin, Challenge):
     def run(self,game):
         self.participants = game.tribes
         self.record('You ready for a reward challenge?')
-        self.record('Getting a look at our tribes, {}.'.format(self.participants))
+        self.record(htmlify(game.players[0]))
+        self.record('Getting a look at our tribes, {}.'.format(htmlify(self.participants)))
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
         self.report_probabilities(strengths) #Event

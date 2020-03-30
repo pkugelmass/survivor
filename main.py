@@ -42,7 +42,7 @@ class Game():
 
     __gameid = 0
 
-    def __init__(self,game_parameters):
+    def __init__(self,game_parameters=game_parameters):
 
         check_parameters(game_parameters)
         self.parameters = game_parameters
@@ -155,10 +155,13 @@ class Player():
         return self.strategy + self.social + self.physical
 
     def __str__(self):
-        return self.fullname()
+        return self.first
 
     def __repr__(self):
         return self.first
+
+    def link(self):
+        return(r'<a href="/player/{}/">{}</a>'.format(self.id,self.first))
 
     def info(self):
         print(self.fullname())
@@ -199,6 +202,9 @@ class Tribe():
             player.tribe.players.remove(player)
         self.players.append(player)
         player.tribe = self
+
+    def link(self):
+        return r'<a href="/tribe/{}/">{}</a>'.format(self.id,self.name)
 
 class GameSetupError(Exception):
     pass

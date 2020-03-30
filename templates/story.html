@@ -11,13 +11,13 @@
       <th>Event</th>
       <th>What Happened</th>
     </tr>
-    {% for event in game.schedule.events %}
+    {% for event in game.schedule.events|reverse %}
       {% if event.complete %}
         <tr>
           <td>{{event}}</td>
           <td><ul>
             {% for item in event.log %}
-            <li>{{item}}</li>
+            <li>{{item|safe}}</li>
             {% endfor %}
           </ul></td>
         </tr>

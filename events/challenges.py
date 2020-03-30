@@ -11,6 +11,13 @@ class Challenge(Event):
     def run_challenge(self):
         self.result = choice(self.participants)
 
+class RewardMixin:
+
+    def announce_winner(self):
+        losers = [x for x in self.participants if self.result != x]
+        self.record('{} wins reward!'.format(self.result))
+        self.record('{}, go back to camp; got nothin\' for ya.'.format(losers))
+
 class TribalMixin:
 
     def equalize_tribes(self):
@@ -32,7 +39,7 @@ class TribalMixin:
             indstrength = [p.physical for p in tribe.players if p not in bench[tribe]]
             strength = mean(indstrength)
             tribestrengths.append(strength)
-        relative = [float(x)/sum(tribestrengths) for x in tribestrengths]
+        relative = [round(float(x)/sum(tribestrengths),3) for x in tribestrengths]
         strengths = dict(zip(self.participants,relative))
         self.record('Relative strengths: {}'.format(strengths))
         return strengths
@@ -40,8 +47,27 @@ class TribalMixin:
     def run_challenge(self,strength):
         self.result = choice(list(strength.keys()),p=list(strength.values()))
 
+class ImmunityMixin:
 
-class TribalReward(TribalMixin, Challenge):
+    def take_back_immunity(self):
+        taken_back = False
+        for x in self.participants:
+            if x.immunity == True:
+                self.record('Immunity is back up for grabs.')
+                x.immunity = False
+                taken_back = True
+        if not taken_back:
+            self.record('This is what you\'re competing for: immunity.')
+
+    def announce_winner(self):
+        self.record('{} wins immunity!'.format(self.result))
+        losing_tribes = list(set(self.participants) - set([self.result]))
+        self.record('{}, I\'ll see you at tribal council.'.format(losing_tribes))
+
+    def award_immunity(self):
+        self.result.immunity = True
+
+class TribalReward(TribalMixin, RewardMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Tribal Reward'
@@ -53,13 +79,31 @@ class TribalReward(TribalMixin, Challenge):
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
         self.run_challenge(strengths) #TribalMixin
-        self.announce_winner() #TribalReward
+        self.announce_winner() #RewardMixin
         self.mark_complete() #Event
 
-    def announce_winner(self):
-        losers = [x for x in self.participants if self.result != x]
-        self.record('{} wins reward!'.format(self.result))
-        self.record('{}, go back to camp; got nothin\' for ya.'.format(losers))
+class TribalImmunity(TribalMixin, ImmunityMixin, Challenge):
+    def __init__(self,day,**kwargs):
+        super().__init__(day,**kwargs)
+        self.name = 'Tribal Immunity'
+
+    def run(self,game):
+        self.participants = game.tribes
+        self.record('Getting a look at our tribes, {}.'.format(self.participants))
+        self.take_back_immunity() #ImmunityMixin
+        sit_outs = self.equalize_tribes() #TribalMixin
+        strengths = self.calculate_strength(sit_outs) #TribalMixin
+        self.run_challenge(strengths) #TribalMixin
+        self.announce_winner() #ImmunityMixin
+        self.award_immunity() #ImmunityMixin
+        self.mark_complete() #Event
+        self.update_tribal(game)
+
+    def update_tribal(self,game):
+        going_to_tribal = [x for x in game.tribes if x.immunity == False][0]
+        upcoming_tribal = list(filter(lambda x: not x.complete,game.schedule.event_type(TribalCouncil)))[0]
+        upcoming_tribal.name = upcoming_tribal.name + ' ({})'.format(going_to_tribal.name)
+
 
 class IndividualMixin():
     def find_participants(self,game):
@@ -85,26 +129,3 @@ class IndividualReward(IndividualMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Individual Reward'
-
-class TribalImmunity(Challenge):
-    def __init__(self,day,**kwargs):
-        super().__init__(day,**kwargs)
-        self.name = 'Tribal Immunity'
-
-    def start(self):
-        for tribe in self.who:
-            if tribe.immunity == True:
-                self.record('Immunity is back up for grabs.')
-                tribe.immunity = False
-
-    def end(self):
-        self.record('{} wins immunity!'.format(self.result))
-        self.result.immunity = True
-        losing_tribes = list(set(self.who) - set([self.result]))
-        self.record('{}, I\'ll see you at tribal council.'.format(losing_tribes))
-
-    def game_changes(self,game):
-        self.complete = True
-        going_to_tribal = [x for x in game.tribes if x.immunity == False][0]
-        upcoming_tribal = list(filter(lambda x: not x.complete,game.schedule.event_type(TribalCouncil)))[0]
-        upcoming_tribal.name = upcoming_tribal.name + ' ({})'.format(going_to_tribal.name)

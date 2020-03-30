@@ -116,6 +116,10 @@ class Game():
     def run_next(self):
         self.get_next_event().run(self)
 
+    def run_all(self):
+        while self.gameon:
+            self.run_next()
+
 class Player():
 
     __id = 0

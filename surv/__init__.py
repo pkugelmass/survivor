@@ -1,11 +1,16 @@
 from flask import Flask, render_template, redirect, url_for, request
 app = Flask(__name__)
 
-from surv.main import Game, game_parameters
+# import os
+# os.chdir(os.path.dirname(__file__))
+
+from surv.game.game import Game
 from surv.events.events import htmlify2
 
+
+
 def reset_game():
-    return Game(game_parameters)
+    return Game()
 
 g = reset_game()
 

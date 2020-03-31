@@ -11,7 +11,8 @@ def import_names():
         'L' : open('data/last-names.txt','r').read().split('\n'),
         'tribes' : open('data/tribe-names.txt','r').read().split('\n'),
         'jobs' : open('data/occupations.txt','r').read().split('\n'),
-        'towns' : open('data/hometowns.txt','r').read().split('\n')
+        'towns' : open('data/hometowns.txt','r').read().split('\n'),
+        'states' : open('data/states.txt','r').read().split('\n')
     }
     names['tribes'] = list(set([x for x in names['tribes'] if len(x)>1]))
     return names
@@ -31,6 +32,11 @@ def generate_tribe_name():
     num_syllables = choice(range(2,len(syllables)))
     new_word = ''.join(choice(syllables,num_syllables,replace=False)).title()
     return new_word
+
+def generate_hometown():
+    town = choice(NAMES['towns'])
+    state = choice(NAMES['states'])
+    return '{}, {}'.format(town,state)
 
 game_parameters = {
     'players' : 18,
@@ -145,7 +151,7 @@ class Player():
 
         self.age = int(normalvariate(33,8)//1)
         self.job = choice(NAMES['jobs'])
-        self.hometown = choice(NAMES['towns'])
+        self.hometown = generate_hometown()
 
         self.strategy = randint(1,5)
         self.social = randint(1,5)

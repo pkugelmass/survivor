@@ -1,7 +1,7 @@
 from random import randint, choice
 from .challenges import TribalImmunity, TribalReward, IndividualReward, IndividualImmunity
 from .tribal import FinalTribal, TribalCouncil, JuryTribalCouncil
-from .special import Merge, Swap
+from .special import Intro, Merge, Swap
 
 class Schedule:
     def __init__(self):
@@ -70,6 +70,9 @@ def generate_schedule(players=20,days=39,jury=10,final=3, game=None):
         final = game.parameters['final']
         tribes = game.parameters['tribes']
 
+
+    # INTRO
+    s.add_event(Intro(1))
 
     # FINAL TRIBAL
     s.add_event(FinalTribal(days))

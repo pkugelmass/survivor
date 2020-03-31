@@ -3,6 +3,26 @@ from itertools import cycle
 from numpy.random import shuffle,choice
 import re
 
+class Intro(Event):
+    def __init__(self,day,**kwargs):
+        super().__init__(day,**kwargs)
+        self.time = 10
+        self.name = "Introductions"
+
+    def run(self,game):
+        self.participants = game.tribes
+        self.record('Welcome to another season of Survivor. Let\'s meet our players.')
+        self.introduce_tribes()
+        self.record('{} people... {} days... ONE SURVIVOR!',len(game.players),game.parameters['days'])
+        self.mark_complete()
+
+    def introduce_tribes(self):
+        lead_ins = ['First','Next','Finally','Also','And wow']
+        for i,tribe in enumerate(self.participants):
+            self.record('{}, the {} tribe...',lead_ins[i],tribe)
+            for p in tribe.players:
+                self.record('-- {}, a {} year old {} from {}.',p,p.age,p.job,p.hometown)
+
 class Merge(Event):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)

@@ -39,10 +39,9 @@ class Event():
         self.complete = True
 
     def report_probabilities(self,prob_dict):
-        #prob_dict_sorted = sorted(prob_dict.items(), key=lambda x: x[1], reverse=True)
+        prob_dict = dict(sorted(prob_dict.items(),key=lambda x:x[1])[::-1])
         shorten = lambda x: '{}%'.format(re.match('[0-9]+\.([1-9+]|[0])',x).group()) if len(x)>6 else x
         percentages = [shorten('{}%'.format(round(x,3)*100)) for x in prob_dict.values()]
-        # percentages = ['{}%'.format(round(x,3)*100) for x in prob_dict.values()]
         self.record('Probabilities: {}', dict(zip(prob_dict.keys(),percentages)))
 
 

@@ -3,16 +3,20 @@
 {% block content %}
 
 <div class="row m-3 p-3">
+  <div class="col-lg-2"></div>
+  <div class="col-lg-8">
 
-  <h3>{{event}}</h3>
-
-  <ul>
-    {% for line in event.log %}
-      <li>{{line}}</li>
-    {% endfor %}
-  </ul>
-<a href="/schedule">Back to schedule</a>
-
+    <h3>{{event}}</h3>
+    <hr>
+      {% for line in event.log %}
+        <p>{{line|safe}}</p>
+      {% endfor %}
+    <hr>
+    <p class="text-center"><a href="/schedule">
+        <button type="button" class="btn btn-outline-primary">Back to schedule</button>
+    </a></p>
+  </div>
+  <div class="col-lg-2"></div>
 </div>
 
 {% endblock %}

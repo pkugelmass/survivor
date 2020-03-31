@@ -29,10 +29,10 @@
         <td>{{event.num_tribes}}</td>
         <td>{{event.complete}}</td>
         <td>{% if event.result %}
-              {{event.result}}
+              {{event.result|linkify|safe}}
             {% elif game.next_event() == event.id %}
               <a href="/run/{{event.id}}">
-                <button type="button" class="btn btn-primary btn-sm small">Run</button>
+                <button type="button" class="btn btn-outline-primary btn-sm small">Run</button>
               </a>
             {% endif %}</td>
       </tr>

@@ -1,6 +1,8 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
 from events.schedule import generate_schedule
+from numpy.random import choice
+import re
 
 def import_names():
     names = {
@@ -21,6 +23,14 @@ def generate_name(gender):
     first = choice(NAMES[gender]).title()
     last = choice(NAMES['L']).title()
     return (first,last)
+
+def generate_tribe_name():
+    names = choice(NAMES['tribes'],size=2)
+    justletters = re.sub('\s','',''.join(names))
+    syllables = re.findall('[^aeiouAEIOU]+[aeiou]',justletters)
+    num_syllables = choice(range(2,len(syllables)))
+    new_word = ''.join(choice(syllables,num_syllables,replace=False)).title()
+    return new_word
 
 game_parameters = {
     'players' : 18,
@@ -183,7 +193,8 @@ class Tribe():
         if name:
             self.name = name
         else:
-            self.name = choice(NAMES['tribes'])
+            # self.name = choice(NAMES['tribes'])
+            self.name = generate_tribe_name()
 
         self.players = []
         self.immunity = False

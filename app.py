@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request
 app = Flask(__name__)
 
 from main import Game, game_parameters
+from events.events import htmlify2
 
 def reset_game():
     return Game(game_parameters)
@@ -66,3 +67,10 @@ def story():
 def sim():
     g.run_all()
     return redirect(url_for('story'))
+
+@app.template_filter('linkify')
+def linkify(thing):
+    try:
+        return htmlify2(thing)
+    except:
+        return thing

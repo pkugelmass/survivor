@@ -102,15 +102,12 @@ def generate_schedule(players=20,days=39,jury=10,final=3, game=None):
         tribal.name = '{} #{}'.format(tribal.name,i+1)
 
     # Merge
-    merge_day = s.event_type(JuryTribalCouncil)[0].day-3
+    merge_day = s.event_type(JuryTribalCouncil)[0].day-2
     s.add_event(Merge(merge_day))
 
     # Swap
-    swap_day = choice([x+1 for x in s.tribal_days()[2:5]])
-    if swap_day < merge_day:
-        s.add_event(Swap(swap_day))
-    else:
-        s.add_event(Swap(merge_day-6))
+    swap_day = merge_day - 6
+    s.add_event(Swap(swap_day))
 
     # Challenges
     for tribal in s.event_type(TribalCouncil):

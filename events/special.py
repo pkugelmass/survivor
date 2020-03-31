@@ -57,7 +57,7 @@ class Swap(Event):
                 verb = 'moves to'
             move_to.add_player(player)
             self.record('{} {} {}.'.format(player.first, verb, move_to))
-            self.result = self.participants
+            # self.result = self.participants
 
     def wrap_up(self):
         self.record('Let\'s have a look at the new tribes.')

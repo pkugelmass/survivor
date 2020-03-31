@@ -1,3 +1,4 @@
+import re
 
 class Event():
 
@@ -26,7 +27,8 @@ class Event():
     def __repr__(self):
         return '{} - {}'.format(self.timestamp(), self.name)
 
-    def record(self,string):
+    def record(self,*args):
+        string = htmlify2(*args)
         self.log.append(string)
 
     def run(self,game):
@@ -38,14 +40,16 @@ class Event():
 
     def report_probabilities(self,prob_dict):
         #prob_dict_sorted = sorted(prob_dict.items(), key=lambda x: x[1], reverse=True)
-        percentages = ['{}%'.format(round(x,3)*100) for x in prob_dict.values()]
-        self.record('Looks like... {}'.format(htmlify(dict(zip(prob_dict.keys(),percentages)))))
+        shorten = lambda x: '{}%'.format(re.match('[0-9]+\.([1-9+]|[0])',x).group()) if len(x)>6 else x
+        percentages = [shorten('{}%'.format(round(x,3)*100)) for x in prob_dict.values()]
+        # percentages = ['{}%'.format(round(x,3)*100) for x in prob_dict.values()]
+        self.record('Probabilities: {}', dict(zip(prob_dict.keys(),percentages)))
 
 
 def linkify(thing):
     with_links = []
     try:
-        if isinstance(thing,dict):
+        if isinstance(thing,(dict,str)):
             assert False
         for x in thing:
             if hasattr(x,'link'):
@@ -68,11 +72,22 @@ def linkify(thing):
                 return thing
 
 def listify(thing):
-    if isinstance(thing, str):
+    if isinstance(thing, (str,int)):
         return thing
     else:
-        out = ", ".join(thing[:-1])
-        return "{} and {}".format(out, thing[-1])
+        if len(thing) > 1:
+            out = ", ".join(thing[:-1])
+            return "{} and {}".format(out, thing[-1])
+        else:
+            return thing[0]
 
 def htmlify(thing):
     return listify(linkify(thing))
+
+def htmlify2(string,*args):
+    if len(args) > 0:
+        htmlargs = [htmlify(thing) for thing in args]
+        string = string.format(*htmlargs)
+        return string
+    else:
+        return htmlify(string)

@@ -12,7 +12,7 @@ class TribalCouncil(Event):
 
     def run(self,game):
         self.participants = [x for x in game.tribes if not x.immunity][0].players
-        self.record('Welcome to Tribal Council, {}.'.format(self.participants))
+        self.record('Welcome to Tribal Council, {}.', self.participants)
         self.record('Light your torches...')
         vuln = self.calculate_vulnerability()
         self.report_probabilities(vuln) #Event
@@ -28,7 +28,7 @@ class TribalCouncil(Event):
         return vuln
 
     def vote(self,vulnerability):
-        self.record('It is... time to vote. {}, you\'re up...'.format(self.participants[0]))
+        self.record('It is... time to vote. {}, you\'re up...', self.participants[0].first)
         while self.votes_tied():
             for player in self.participants:
                 vote = None
@@ -52,9 +52,9 @@ class TribalCouncil(Event):
     def read_votes(self):
         cnt = self.count_votes()
         self.record('I\'ll read the votes.')
-        self.record(cnt.most_common())
+        self.record(dict(cnt.most_common()))
         self.result = cnt.most_common(1)[0][0]
-        self.record('Next person voted off Survivor is {}; bring me your torch.'.format(self.result.first))
+        self.record('Next person voted off Survivor is {}; bring me your torch.', self.result.first)
         self.record('The tribe has spoken. It\'s time for you to go.')
 
     def eliminate_player(self,game):
@@ -68,7 +68,7 @@ class JuryTribalCouncil(TribalCouncil):
     def introduce_jury(self,game):
         if len(game.jury) > 0:
             self.jury = game.jury
-            self.record('Let\'s welcome the members of our jury, {}.'.format(self.jury))
+            self.record('Let\'s welcome the members of our jury, {}.', self.jury)
 
     def start(self):
         if len(self.jury) > 0:

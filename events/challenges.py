@@ -1,4 +1,4 @@
-from .events import Event
+from .events import Event, htmlify
 from .tribal import TribalCouncil
 from numpy.random import sample, choice
 from numpy import mean
@@ -15,8 +15,8 @@ class RewardMixin:
 
     def announce_winner(self):
         losers = [x for x in self.participants if self.result != x]
-        self.record('{} wins reward!'.format(self.result))
-        self.record('{}, go back to camp; got nothin\' for ya.'.format(losers))
+        self.record('{} wins reward!', self.result)
+        self.record('{}, go back to camp; got nothin\' for ya.', losers)
 
 class TribalMixin:
 
@@ -27,10 +27,10 @@ class TribalMixin:
             for tribe in self.participants:
                 sit_out = len(tribe.players) - min(sizes)
                 if sit_out > 0:
-                    self.record('{} has to sit out {} players.'.format(tribe,sit_out))
+                    self.record('{} has to sit out {} players.', tribe, sit_out)
                     sit_outs = choice(tribe.players,size=sit_out)
                     bench[tribe] = sit_outs
-                    self.record('{} will sit out for {}; take a seat on the bench.'.format(sit_outs,tribe))
+                    self.record('{} will sit out for {}; take a seat on the bench.',sit_outs,tribe)
         return bench
 
     def calculate_strength(self, bench):
@@ -59,9 +59,9 @@ class ImmunityMixin:
             self.record('This is what you\'re competing for: immunity.')
 
     def announce_winner(self):
-        self.record('{} wins immunity!'.format(self.result))
+        self.record('{} wins immunity!', self.result)
         losing_tribes = list(set(self.participants) - set([self.result]))
-        self.record('{}, I\'ll see you at tribal council.'.format(losing_tribes))
+        self.record('{}, I\'ll see you at tribal council.', losing_tribes)
 
     def award_immunity(self):
         self.result.immunity = True
@@ -74,7 +74,8 @@ class TribalReward(TribalMixin, RewardMixin, Challenge):
     def run(self,game):
         self.participants = game.tribes
         self.record('You ready for a reward challenge?')
-        self.record('Getting a look at our tribes, {}.'.format(self.participants))
+        self.record(game.players[0])
+        self.record('Getting a look at our tribes, {}.', self.participants)
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
         self.report_probabilities(strengths) #Event
@@ -89,7 +90,7 @@ class TribalImmunity(TribalMixin, ImmunityMixin, Challenge):
 
     def run(self,game):
         self.participants = game.tribes
-        self.record('Getting a look at our tribes, {}.'.format(self.participants))
+        self.record('Getting a look at our tribes, {}.', self.participants)
         self.take_back_immunity() #ImmunityMixin
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
@@ -118,13 +119,13 @@ class IndividualImmunity(IndividualMixin, Challenge):
     def start(self):
         for player in self.who:
             if player.immunity == True:
-                self.record('I\'ll take the necklace back from {}.'.format(player))
+                self.record('I\'ll take the necklace back from {}.', player)
                 self.record('Individual immunity is back up for grabs.')
                 player.immunity = False
 
     def end(self):
         self.result.immunity = True
-        self.record('{} wins immunity!'.format(self.result.first))
+        self.record('{} wins immunity!', self.result.first)
 
 class IndividualReward(IndividualMixin, Challenge):
     def __init__(self,day,**kwargs):

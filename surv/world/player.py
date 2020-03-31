@@ -50,3 +50,12 @@ class Player():
 
     def move(self,new_tribe):
         new_tribe.add_player(self)
+
+"""
+Ideas for developing players:
+* Challenges: Strength, Endurance, Puzzles, Swimming, Dexterity/Steadiness
+* Strategy: Anticipation, Decisions, Aggressiveness, Persuasiveness, Loyalty, BS-Detector, Honesty
+* Social: Friendliness, Work Ethic, Stability, Leadership
+* Factors: Morale, Desire, Hunger, Fatigue, Health
+* Others: You're a friend. You're an enemy. You're an ally. You're an opponent. You're a threat. You're a goat.
+"""

@@ -2,9 +2,6 @@ from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
 from events.schedule import generate_schedule
 
-import os
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-
 def import_names():
     names = {
         'M' : open('data/male-first-names.txt','r').read().split('\n'),
@@ -29,7 +26,6 @@ game_parameters = {
     'players' : 18,
     'days' : 39,
     'jury' : 10,
-    'early_merge' : randint(0,2),
     'final' : 3,
     'tribes' : 2,
 }
@@ -120,6 +116,7 @@ class Game():
 
     def run_next(self):
         self.get_next_event().run(self)
+        self.day = self.get_next_event().day
 
     def run_all(self):
         while self.gameon:

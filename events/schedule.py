@@ -59,7 +59,7 @@ class Schedule:
                     else:
                         event.num_tribes = 1
 
-def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,2), game=None):
+def generate_schedule(players=20,days=39,jury=10,final=3, game=None):
 
     s = Schedule()
 
@@ -68,7 +68,6 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
         days = game.parameters['days']
         jury = game.parameters['jury']
         final = game.parameters['final']
-        early_merge = game.parameters['early_merge']
         tribes = game.parameters['tribes']
 
 
@@ -103,14 +102,15 @@ def generate_schedule(players=20,days=39,jury=10,final=3, early_merge=randint(0,
         tribal.name = '{} #{}'.format(tribal.name,i+1)
 
     # Merge
-    merge_day = s.event_type(TribalCouncil)[-jury-2-early_merge].day+1
+    merge_day = s.event_type(JuryTribalCouncil)[0].day-3
     s.add_event(Merge(merge_day))
 
     # Swap
     swap_day = choice([x+1 for x in s.tribal_days()[2:5]])
     if swap_day < merge_day:
         s.add_event(Swap(swap_day))
-    #s.add_event(Swap(2))
+    else:
+        s.add_event(Swap(merge_day-6))
 
     # Challenges
     for tribal in s.event_type(TribalCouncil):

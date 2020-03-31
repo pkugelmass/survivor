@@ -8,8 +8,8 @@ class Challenge(Event):
         super().__init__(day,**kwargs)
         self.time = 12
 
-    def run_challenge(self):
-        self.result = choice(self.participants)
+    def run_challenge(self,strength):
+        self.result = choice(list(strength.keys()),p=list(strength.values()))
 
 class RewardMixin:
 
@@ -43,9 +43,6 @@ class TribalMixin:
         strengths = dict(zip(self.participants,relative))
         return strengths
 
-    def run_challenge(self,strength):
-        self.result = choice(list(strength.keys()),p=list(strength.values()))
-
 class ImmunityMixin:
 
     def take_back_immunity(self):
@@ -66,6 +63,14 @@ class ImmunityMixin:
     def award_immunity(self):
         self.result.immunity = True
 
+class IndividualMixin:
+
+    def calculate_strength(self):
+        strengths = [p.physical for p in self.participants]
+        relative = [round(float(x)/sum(strengths),3) for x in strengths]
+        strength_dict = dict(zip(self.participants,relative))
+        return strength_dict
+
 class TribalReward(TribalMixin, RewardMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
@@ -79,7 +84,7 @@ class TribalReward(TribalMixin, RewardMixin, Challenge):
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
         self.report_probabilities(strengths) #Event
-        self.run_challenge(strengths) #TribalMixin
+        self.run_challenge(strengths) #Event
         self.announce_winner() #RewardMixin
         self.mark_complete() #Event
 
@@ -95,7 +100,7 @@ class TribalImmunity(TribalMixin, ImmunityMixin, Challenge):
         sit_outs = self.equalize_tribes() #TribalMixin
         strengths = self.calculate_strength(sit_outs) #TribalMixin
         self.report_probabilities(strengths) #Event
-        self.run_challenge(strengths) #TribalMixin
+        self.run_challenge(strengths) #Challenge
         self.announce_winner() #ImmunityMixin
         self.award_immunity() #ImmunityMixin
         self.mark_complete() #Event
@@ -106,28 +111,34 @@ class TribalImmunity(TribalMixin, ImmunityMixin, Challenge):
         upcoming_tribal = list(filter(lambda x: not x.complete,game.schedule.event_type(TribalCouncil)))[0]
         upcoming_tribal.name = upcoming_tribal.name + ' ({})'.format(going_to_tribal.name)
 
-
-class IndividualMixin():
-    def find_participants(self,game):
-        self.who = game.active_players()
-
-class IndividualImmunity(IndividualMixin, Challenge):
+class IndividualImmunity(IndividualMixin, ImmunityMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Individual Immunity'
 
-    def start(self):
-        for player in self.who:
-            if player.immunity == True:
-                self.record('I\'ll take the necklace back from {}.', player)
-                self.record('Individual immunity is back up for grabs.')
-                player.immunity = False
+        def run(self,game):
+            self.participants = game.active_players()
+            self.record('Getting a look at our tribes, {}.', self.participants)
+            self.take_back_immunity() #ImmunityMixin
+            strengths = self.calculate_strength() #IndividualMixin
+            self.report_probabilities(strengths) #Event
+            self.run_challenge(strengths) #Challenge
+            self.announce_winner() #ImmunityMixin
+            self.award_immunity() #ImmunityMixin
+            self.mark_complete() #Event
+            # self.update_tribal(game)
 
-    def end(self):
-        self.result.immunity = True
-        self.record('{} wins immunity!', self.result.first)
-
-class IndividualReward(IndividualMixin, Challenge):
+class IndividualReward(IndividualMixin, RewardMixin, Challenge):
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.name = 'Individual Reward'
+
+    def run(self,game):
+        self.participants = game.active_players()
+        self.record('You ready for a reward challenge?')
+        self.record('Getting a look at our final {}, {}.', len(self.participants),self.participants)
+        strengths = self.calculate_strength() #IndividualMixin
+        self.report_probabilities(strengths) #Event
+        self.run_challenge(strengths) #Challenge
+        self.announce_winner() #RewardMixin
+        self.mark_complete() #Event

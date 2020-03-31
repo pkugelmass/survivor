@@ -1,8 +1,10 @@
 from random import randint, choice, shuffle, normalvariate
 from itertools import cycle
-from events.schedule import generate_schedule
+from surv.events.schedule import generate_schedule
 from numpy.random import choice
 import re
+import os
+os.chdir(os.path.dirname(__file__))
 
 def import_names():
     names = {

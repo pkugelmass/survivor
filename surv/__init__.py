@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request
 app = Flask(__name__)
 
-from main import Game, game_parameters
-from events.events import htmlify2
+from surv.main import Game, game_parameters
+from surv.events.events import htmlify2
 
 def reset_game():
     return Game(game_parameters)
@@ -11,7 +11,7 @@ g = reset_game()
 
 @app.route('/')
 def home():
-    return g.tribes[1].name
+    return 'hi'
 
 @app.route('/new/')
 def new():

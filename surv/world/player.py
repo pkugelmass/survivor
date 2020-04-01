@@ -63,21 +63,32 @@ class Alliance:
         Alliance._allianceId += 1
 
         self.members = []
-        self.validate(players)
+        # self.validate(players)
         self.members = [self.add_player(p) for p in players]
         self.active = True
         self.target = None
 
-    def validate(self,players=None):
-        if players == None:
-            players = self.members
-        if not all(isinstance(p,Player) for p in players):
-            raise AllianceError('Hey, are these all players? {}'.format(players))
-        if len(players) != len(set(players)):
-            raise AllianceError('Hey, not all members are unique.')
-        if len(players) < 2:
-            raise AllianceError('Alliance of one?')
-        return players
+    def __str__(self):
+        return 'Alliance: {}'.format(self.members)
+
+    def __len__(self):
+        return len(self.members)
+
+    def link(self):
+        return str(self)
+
+    # def validate(self,players=None):
+    #     try:
+    #         players = self.members
+    #     except:
+    #         players = players
+    #     if not all(isinstance(p,Player) for p in players):
+    #         raise AllianceError('Hey, are these all players? {}'.format(players))
+    #     if len(players) != len(set(players)):
+    #         raise AllianceError('Hey, not all members are unique.')
+    #     if len(players) < 2:
+    #         raise AllianceError('Alliance of one? {}'.format(players))
+    #     return players
 
     def add_player(self,player):
         if player.alliance != None:

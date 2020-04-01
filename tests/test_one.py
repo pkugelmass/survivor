@@ -1,5 +1,7 @@
 import pytest
 from surv.game.game import Game
+from surv.events.camp import Camp
+from surv.events.tribal import TribalCouncil
 
 @pytest.fixture()
 def g():
@@ -54,13 +56,35 @@ def test_swap_player(g):
         assert switch.alliance == a
 
 def test_alliance_dies(g):
-        players = g.players[8:10]
-        a = g.create_alliance(players)
+    players = g.players[8:10]
+    a = g.create_alliance(players)
 
-        a.remove_player(g.players[8])
+    a.remove_player(g.players[8])
 
-        assert g.players[8].alliance == None
-        assert g.players[9].alliance == None
-        assert len(a.members) == 0
-        assert a.active == False
-        assert a not in g.active_alliances()
+    assert g.players[8].alliance == None
+    assert g.players[9].alliance == None
+    assert len(a.members) == 0
+    assert a.active == False
+    assert a not in g.active_alliances()
+
+def test_camp_event_runs(g):
+    g.schedule.add_event(Camp(2))
+    camp = g.schedule.event_type(Camp)[0]
+    camp.run(g)
+
+    assert camp.complete == True
+
+def test_camp_event_runs(g):
+    g.schedule.add_event(Camp(2))
+    camp = g.schedule.event_type(Camp)[0]
+    camp.run(g)
+
+    assert camp.complete == True
+
+def test_are_they_voting(g):
+    tc = g.schedule.event_type(TribalCouncil)[0]
+    tc.participants = g.tribes[0].players
+    tc.alliance_targets()
+    tc.take_a_vote()
+
+    assert len(tc.votes) == len(tc.participants)

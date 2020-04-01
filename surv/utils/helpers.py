@@ -1,3 +1,5 @@
+from numpy.random import choice
+
 def linkify(thing):
     with_links = []
     try:
@@ -43,3 +45,15 @@ def htmlify2(string,*args):
         return string
     else:
         return htmlify(string)
+
+def player_probabilities(players,func):
+    raw_values = [func(p) for p in players]
+    norm = [float(v)/sum(raw_values) for v in raw_values]
+    prob_dict = dict(zip(players,norm))
+    return prob_dict
+
+def player_prob_choice(dict):
+    return choice(list(dict.keys()), p=list(dict.values()))
+
+def choose_player(players,func,n=1):
+    return player_prob_choice(player_probabilities(players,func))

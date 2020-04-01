@@ -1,8 +1,12 @@
 from .events import Event
 from collections import Counter
 from numpy.random import choice
+from surv.utils.helpers import player_probabilities, choose_player
 
 class TribalCouncil(Event):
+
+    _formula = lambda player: 1/(player.strategy + player.social)
+
     def __init__(self,day,**kwargs):
         super().__init__(day,**kwargs)
         self.time = 19
@@ -13,30 +17,33 @@ class TribalCouncil(Event):
         self.participants = [x for x in game.tribes if not x.immunity][0].players
         self.record('Welcome, {}, to Tribal Council.', self.participants[0].tribe)
         self.record('{}... Light your torches.', self.participants)
-        vuln = self.calculate_vulnerability()
-        self.report_probabilities(vuln) #Event
-        self.vote(vuln)
+        self.report_probabilities(player_probabilities(self.participants, TribalCouncil._formula)) #Event
+        self.alliance_targets()
+        self.vote()
         self.read_votes()
         self.announce_elmination()
         self.eliminate_player(game)
         self.mark_complete()
 
-    def calculate_vulnerability(self):
-        vulnerability = [1/(p.strategy + p.social) for p in self.participants]
-        norm = [v/sum(vulnerability) for v in vulnerability]
-        vuln = dict(zip(self.participants,norm))
-        return vuln
+    def alliance_targets(self):
+        alliances = list(set([p.alliance for p in self.participants if p.alliance != None]))
+        for alliance in alliances:
+            possible_targets = list(set(self.participants) - set(alliance.members))
+            alliance.target = choose_player(possible_targets, TribalCouncil._formula)
+            self.record('{} is targeting {}.',alliance,alliance.target)
 
-    def vote(self,vulnerability):
+    def vote(self):
         self.record('It is... time to vote. {}, you\'re up...', choice(self.participants))
         while self.votes_tied():
-            for player in self.participants:
-                vote = None
-                while vote == None:
-                    my_vote = choice(list(vulnerability.keys()),p=list(vulnerability.values()))
-                    if my_vote != player and my_vote.immunity == False:
-                        vote = my_vote
-                self.votes[player] = my_vote
+            self.take_a_vote()
+
+    def take_a_vote(self):
+        for player in self.participants:
+            if player.alliance == None:
+                possible_targets = [p for p in self.participants if p != player and p.immunity == False]
+                self.votes[player] = choose_player(possible_targets,TribalCouncil._formula)
+            else:
+                self.votes[player] = player.alliance.target
 
     def count_votes(self):
         return Counter(self.votes.values())
@@ -73,9 +80,9 @@ class JuryTribalCouncil(TribalCouncil):
         self.record('{}... Light your torches.', self.participants)
         self.introduce_jury(game)
         self.announce_immunity(game)
-        vuln = self.calculate_vulnerability() #TribalCouncil
-        self.report_probabilities(vuln) #Event
-        self.vote(vuln) #TribalCouncil
+        self.report_probabilities(player_probabilities(self.participants, TribalCouncil._formula)) #Event
+        self.alliance_targets()
+        self.vote()
         self.read_votes() #TribalCouncil
         self.announce_elmination()
         self.eliminate_player(game) #TribalCouncil

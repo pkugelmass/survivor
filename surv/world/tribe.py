@@ -31,3 +31,6 @@ class Tribe():
 
     def link(self):
         return r'<a href="/tribe/{}/">{}</a>'.format(self.id,self.name)
+
+    def __len__(self):
+        return len(self.players)

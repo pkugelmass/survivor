@@ -63,6 +63,8 @@ class Game():
 
     def eliminate(self,player):
         player.eliminated = True
+        if player.alliance != None:
+            player.alliance.remove_player(player)
         player.tribe.players.remove(player)
         player.tribe = None
 

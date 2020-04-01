@@ -3,7 +3,7 @@ from itertools import cycle
 
 from surv.game.setup import get_params
 from surv.utils.names import GENDERS
-from surv.world.player import Player
+from surv.world.player import Player, Alliance
 from surv.world.tribe import Tribe
 from surv.events.schedule import generate_schedule
 
@@ -27,6 +27,7 @@ class Game():
         self.tribes = [Tribe() for x in range(tribes)]
         self.old_tribes = []
         self.jury = []
+        self.alliances = []
 
         self.players = [Player(next(GENDERS)) for x in range(players)]
 
@@ -93,3 +94,11 @@ class Game():
     def run_all(self):
         while self.gameon:
             self.run_next()
+
+    def create_alliance(self,players):
+        a = Alliance(players)
+        self.alliances.append(a)
+        return a
+
+    def active_alliances(self):
+        return [a for a in self.alliances if a.active]

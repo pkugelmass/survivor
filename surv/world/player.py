@@ -22,6 +22,7 @@ class Player():
         self.physical = randint(1,5)
 
         self.tribe = None
+        self.alliance = None
         self.immunity = False
         self.eliminated = False
 
@@ -51,6 +52,55 @@ class Player():
 
     def move(self,new_tribe):
         new_tribe.add_player(self)
+
+class Alliance:
+
+    _allianceId = 0
+
+    def __init__(self,players):
+
+        self.id = Alliance._allianceId
+        Alliance._allianceId += 1
+
+        self.members = []
+        self.validate(players)
+        self.members = [self.add_player(p) for p in players]
+        self.active = True
+        self.target = None
+
+    def validate(self,players=None):
+        if players == None:
+            players = self.members
+        if not all(isinstance(p,Player) for p in players):
+            raise AllianceError('Hey, are these all players? {}'.format(players))
+        if len(players) != len(set(players)):
+            raise AllianceError('Hey, not all members are unique.')
+        if len(players) < 2:
+            raise AllianceError('Alliance of one?')
+        return players
+
+    def add_player(self,player):
+        if player.alliance != None:
+            player.alliance.members.remove(player)
+        self.members.append(player)
+        player.alliance = self
+        return player
+
+    def remove_player(self,player):
+        if player not in self.members:
+            raise AllianceError('{} not in alliance'.format(player))
+        self.members.remove(player)
+        player.alliance = None
+        if len(self.members) == 1:
+            self.remove_player(self.members[0])
+            self.active = False
+
+
+class AllianceError(Exception):
+    pass
+
+
+
 
 """
 Ideas for developing players:

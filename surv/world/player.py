@@ -1,5 +1,6 @@
 from random import choice, randint, normalvariate
-from surv.game.names import NAMES, generate_name, generate_hometown
+from surv.utils.names import NAMES, generate_name, generate_hometown
+
 
 class Player():
 

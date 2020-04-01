@@ -1,4 +1,4 @@
-from surv.game.names import generate_tribe_name
+from surv.utils.names import generate_tribe_name
 
 class Tribe():
     __tribeId = 0

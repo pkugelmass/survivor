@@ -2,7 +2,7 @@ from random import shuffle
 from itertools import cycle
 
 from surv.game.setup import get_params
-from surv.game.names import GENDERS
+from surv.utils.names import GENDERS
 from surv.world.player import Player
 from surv.world.tribe import Tribe
 from surv.events.schedule import generate_schedule

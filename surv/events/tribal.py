@@ -26,7 +26,7 @@ class TribalCouncil(Event):
         self.mark_complete()
 
     def alliance_targets(self):
-        alliances = list(set([p.alliance for p in self.participants if p.alliance != None]))
+        alliances = list(set([p.alliance for p in self.participants if p.alliance != None and p.alliance.active==True]))
         for alliance in alliances:
             vulnerable_players = [p for p in self.participants if p.immunity == False]
             possible_targets = list(set(vulnerable_players) - set(alliance.members))

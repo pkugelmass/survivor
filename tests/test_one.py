@@ -61,6 +61,8 @@ def test_alliance_dies(g):
     players = g.players[8:10]
     a = g.create_alliance(players)
 
+    assert len(a) == 2
+
     a.remove_player(g.players[8])
 
     assert g.players[8].alliance == None
@@ -68,6 +70,7 @@ def test_alliance_dies(g):
     assert len(a.members) == 0
     assert a.active == False
     assert a not in g.active_alliances()
+    assert len(a) == 0
 
 def test_camp_event_runs(g):
     g.schedule.add_event(Camp(2))

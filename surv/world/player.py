@@ -74,37 +74,29 @@ class Alliance:
     def __len__(self):
         return len(self.members)
 
+    def __bool__(self):
+        return self.active
+
     def link(self):
         return str(self)
 
-    # def validate(self,players=None):
-    #     try:
-    #         players = self.members
-    #     except:
-    #         players = players
-    #     if not all(isinstance(p,Player) for p in players):
-    #         raise AllianceError('Hey, are these all players? {}'.format(players))
-    #     if len(players) != len(set(players)):
-    #         raise AllianceError('Hey, not all members are unique.')
-    #     if len(players) < 2:
-    #         raise AllianceError('Alliance of one? {}'.format(players))
-    #     return players
-
     def add_player(self,player):
         if player.alliance != None:
-            player.alliance.members.remove(player)
+            player.alliance.remove_player(player)
         self.members.append(player)
         player.alliance = self
         return player
 
     def remove_player(self,player):
-        if player not in self.members:
-            raise AllianceError('{} not in alliance'.format(player))
         self.members.remove(player)
         player.alliance = None
-        if len(self.members) == 1:
-            self.remove_player(self.members[0])
+        self.test_destroy()
+
+    def test_destroy(self):
+        if len(self) == 1:
             self.active = False
+            self.remove_player(self.members[0])
+
 
 
 class AllianceError(Exception):

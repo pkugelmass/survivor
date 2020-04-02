@@ -27,12 +27,15 @@ def generate_name(gender):
     return (first,last)
 
 def generate_tribe_name():
-    names = choice(NAMES['tribes'],size=2)
-    justletters = re.sub('\s','',''.join(names))
-    syllables = re.findall('[^aeiouAEIOU]+[aeiou]',justletters)
-    num_syllables = choice(range(2,len(syllables)))
-    new_word = ''.join(choice(syllables,num_syllables,replace=False)).title()
-    return new_word
+    try:
+        names = choice(NAMES['tribes'],size=2)
+        justletters = re.sub('\s','',''.join(names))
+        syllables = re.findall('[^aeiouAEIOU]+[aeiou]',justletters)
+        num_syllables = choice(range(2,len(syllables)))
+        new_word = ''.join(choice(syllables,num_syllables,replace=False)).title()
+        return new_word
+    except:
+        generate_tribe_name()
 
 def generate_hometown():
     town = choice(NAMES['towns'])

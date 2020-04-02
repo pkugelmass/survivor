@@ -2,6 +2,8 @@ import pytest
 from surv.game.game import Game
 from surv.events.camp import Camp
 from surv.events.tribal import TribalCouncil
+from surv.events.challenges import IndividualImmunity
+
 
 @pytest.fixture()
 def g():
@@ -88,3 +90,21 @@ def test_are_they_voting(g):
     tc.take_a_vote()
 
     assert len(tc.votes) == len(tc.participants)
+
+def test_individual_immunity(g):
+    iic = g.schedule.event_type(IndividualImmunity)[0]
+    iic.participants = g.tribes[0].players
+    iic.run(g)
+
+    assert iic.complete == True
+    assert iic.result.immunity == True
+
+def test_immunity_at_council(g):
+    g.create_alliance(g.players[:3])
+    g.players[4].immunity = True
+
+    tc = g.schedule.event_type(TribalCouncil)[0]
+    tc.participants = g.players[:5]
+    tc.run(g)
+
+    assert tc.result != g.players[4]

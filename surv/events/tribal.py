@@ -28,7 +28,8 @@ class TribalCouncil(Event):
     def alliance_targets(self):
         alliances = list(set([p.alliance for p in self.participants if p.alliance != None]))
         for alliance in alliances:
-            possible_targets = list(set(self.participants) - set(alliance.members))
+            vulnerable_players = [p for p in self.participants if p.immunity == False]
+            possible_targets = list(set(vulnerable_players) - set(alliance.members))
             alliance.target = choose_player(possible_targets, TribalCouncil._formula)
             self.record('{} is targeting {}.',alliance,alliance.target)
 

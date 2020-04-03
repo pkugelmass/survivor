@@ -44,6 +44,16 @@ class Event():
         percentages = [shorten('{}%'.format(round(x,3)*100)) for x in prob_dict.values()]
         self.record('Probabilities: {}', dict(zip(prob_dict.keys(),percentages)))
 
+class ReunionShow(Event):
+    def __init__(self,day,**kwargs):
+        super().__init__(day,**kwargs)
+        self.time = 19
+        self.name = 'Reunion Show'
+
+    def run(game):
+        self.record('So {}, do you think you made the right moves?', game.winner)
+
+
 
 def linkify(thing):
     with_links = []

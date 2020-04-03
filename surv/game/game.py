@@ -94,8 +94,9 @@ class Game():
         self.day = self.get_next_event().day
 
     def run_all(self):
-        while self.gameon:
-            self.run_next()
+        for event in self.schedule.events:
+            if not event.complete:
+                event.run(self)
 
     def create_alliance(self,players):
         a = Alliance(players)

@@ -55,5 +55,5 @@ def player_probabilities(players,func):
 def player_prob_choice(dict):
     return choice(list(dict.keys()), p=list(dict.values()))
 
-def choose_player(players,func,n=1):
+def choose_player(players,func):
     return player_prob_choice(player_probabilities(players,func))

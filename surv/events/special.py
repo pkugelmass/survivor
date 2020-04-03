@@ -82,3 +82,14 @@ class Swap(Event):
     def wrap_up(self):
         self.record('Let\'s have a look at the new tribes.')
         self.record({x:x.players for x in self.participants})
+
+class ReunionShow(Event):
+    def __init__(self,day,**kwargs):
+        super().__init__(day,**kwargs)
+        self.time = 19
+        self.name = 'Reunion Show'
+
+    def run(self,game):
+        self.record('So {}, do you think you made the right moves?', game.winner)
+        self.mark_complete()
+        game.gameon = False

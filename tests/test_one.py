@@ -1,4 +1,5 @@
 import pytest
+import re
 from surv.game.game import Game
 from surv.events.camp import Camp
 from surv.events.tribal import TribalCouncil
@@ -111,3 +112,30 @@ def test_immunity_at_council(g):
     tc.run(g)
 
     assert tc.result != g.players[4]
+
+def test_does_game_run(g):
+    g.run_all()
+
+    assert all([e.complete for e in g.schedule.events])
+
+def test_everyone_is_aligned(g):
+    tc = g.schedule.event_type(TribalCouncil)[0]
+    tc.participants = g.players[0:4]
+    a1 = g.create_alliance(g.players[0:4])
+    size = len(a1)
+    tc.alliance_targets()
+    tc.take_a_vote()
+
+    assert len(a1) == size-1
+
+def test_draw_rocks(g):
+    tc = g.schedule.event_type(TribalCouncil)[0]
+    tc.participants = g.players[0:4]
+    a1 = g.create_alliance(g.players[0:2])
+    a2 = g.create_alliance(g.players[2:4])
+
+    tc.alliance_targets()
+    tc.vote()
+    tc.read_votes()
+
+    assert any([re.search('draw rocks',entry) for entry in tc.log])

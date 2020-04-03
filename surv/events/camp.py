@@ -13,7 +13,6 @@ class Camp(Event):
         for tribe in game.tribes:
             self.camp_talk(tribe.players)
 
-
             for a in range(randint(1,3)):
                 players = self.get_together(tribe)
                 self.form_alliance(game,players)
@@ -23,7 +22,7 @@ class Camp(Event):
         for pair in permutations(players,2):
             p1, p2 = pair
             p2_mean = (p2.social-3) * 0.25
-            p2_effect = normal(p2_mean,0.5)
+            p2_effect = normal(p2_mean,1)
             p1.relationships[p2] += p2_effect
 
 

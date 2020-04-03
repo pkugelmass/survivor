@@ -1,7 +1,6 @@
 from random import choice, randint, normalvariate
 from surv.utils.names import NAMES, generate_name, generate_hometown
 
-
 class Player():
 
     __id = 0
@@ -25,6 +24,8 @@ class Player():
         self.alliance = None
         self.immunity = False
         self.eliminated = False
+
+        self.relationship = {}
 
     def fullname(self):
         return ('{} {}'.format(self.first,self.last))
@@ -50,8 +51,10 @@ class Player():
         print(f'Physical: {self.physical}')
         print(f'Overall: {self.strength()}')
 
-    def move(self,new_tribe):
-        new_tribe.add_player(self)
+    def rel(self,player):
+        rel_sum = self.relationship[player] + player.relationship[self]
+        return rel_sum
+
 
 class Alliance:
 

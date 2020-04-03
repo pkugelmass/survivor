@@ -31,6 +31,26 @@
             <td>{{player.strength()}}</td>
           </tr>
       </table>
+
+      <h5>Relationships:</h5>
+
+      <table class="table table-sm">
+        {% with player_list = game.players %}
+          <tr>
+            <th></th>
+            {% for other in player_list %}
+              <th>{{other.first}}</th>
+            {% endfor %}
+          </tr>
+          <tr>
+            <th>Relationship</th>
+            {% for other in player_list %}
+              <td>{{player.rel(other)|round(2)}}</td>
+            {% endfor %}
+          </tr>
+          {% endwith %}
+      </table>
+
       </div>
   </div>
 

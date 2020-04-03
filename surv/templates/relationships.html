@@ -2,32 +2,41 @@
 
 {% block content %}
 
+{% with player_list = game.active_players()|groupby("tribe.name") %}
+
+{% for tribe, players in player_list %}
+
 <div class="row m-3 p-3">
 
   <table class="table table-hover table-sm">
 
-    {% with player_list = game.active_players() %}
+    <h5 class="text-center">Tribe: {{tribe}}</h5>
 
     <tr>
       <th></th>
-      {% for player in player_list %}
+      {% for player in players %}
         <th>{{player.first}}</th>
       {% endfor %}
     </tr>
 
-    {% for player in player_list %}
+    {% for player in players %}
       <tr>
         <th>{{player.first}}</th>
-          {% for other_player in player_list %}
+          {% for other_player in players %}
             <td>{{player.relationships[other_player]|round(1)}}</td>
           {% endfor %}
       </tr>
     {% endfor %}
 
-    {% endwith %}
 
   </table>
 
 </div>
+
+  {% endfor %}
+
+  {% endwith %}
+
+
 
 {% endblock %}

@@ -63,3 +63,7 @@ def story():
 def sim():
     g.run_all()
     return redirect(url_for('story'))
+
+@app.route('/relationships/')
+def relationships():
+    return render_template('relationships.html',title=relationships,game=g)

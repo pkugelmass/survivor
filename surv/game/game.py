@@ -31,9 +31,16 @@ class Game():
 
         self.players = [Player(next(GENDERS)) for x in range(players)]
 
+        self.initialize_relationships()
         self.assign_players()
 
         self.schedule = generate_schedule(game=self)
+
+        self.winner = None
+
+    def initialize_relationships(self):
+        for player in self.players:
+            player.relationships = {player:float(0) for player in self.players}
 
     def assign_players(self, random=True):
         tr = cycle(self.tribes)

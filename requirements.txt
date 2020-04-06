@@ -1,3 +1,5 @@
 flask
 pytest
 python-dotenv
+numpy
+gunicorn

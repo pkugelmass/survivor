@@ -1,15 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
+
 app = Flask(__name__)
-
-# import os
-# os.chdir(os.path.dirname(__file__))
-
-from surv.game.game import Game
-
-def reset_game():
-    return Game()
-
-g = reset_game()
+app.secret_key = 'wow'
 
 from surv.routes import *
 from surv.utils.filters import *

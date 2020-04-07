@@ -1,6 +1,5 @@
-from flask import render_template, redirect, url_for, request
-from surv import app, g, reset_game
-
+from flask import render_template, redirect, url_for, request, session
+from surv import app
 from surv.game.game import Game
 
 g = Game()

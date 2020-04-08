@@ -1,1 +1,1 @@
-web: gunicorn surv:app
+web: gunicorn --workers 1 surv:app
